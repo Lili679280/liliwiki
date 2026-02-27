@@ -1,0 +1,111 @@
+baseURL = 'https://liliwiki.com/'
+languageCode = 'zh-cn'
+title = 'LiliWiki'
+theme = 'hugo-theme-stack'
+
+paginate = 10
+hasCJKLanguage = true
+
+[params]
+    mainSections = ['post']
+    featuredImageField = 'image'
+    rssFullContent = true
+    favicon = ''
+
+[params.footer]
+    since = 2025
+
+[params.dateFormat]
+    published = '2006-01-02'
+    lastUpdated = '2006-01-02 15:04'
+
+[params.sidebar]
+    emoji = ''
+    subtitle = '个人博客 & 资源分享'
+    avatar = ''
+
+[params.article]
+    math = false
+    toc = true
+    readingTime = true
+
+[params.article.license]
+    enabled = false
+
+[params.comments]
+    enabled = false
+
+[[params.widgets.homepage]]
+    type = 'search'
+
+[[params.widgets.homepage]]
+    type = 'archives'
+
+[[params.widgets.homepage]]
+    type = 'tag-cloud'
+
+[[params.widgets.homepage]]
+    type = 'categories'
+
+[[params.widgets.page]]
+    type = 'toc'
+
+[params.colorScheme]
+    toggle = true
+    default = 'auto'
+
+[menu]
+
+[[menu.main]]
+    identifier = 'home'
+    name = '首页'
+    url = '/'
+    weight = 1
+    [menu.main.params]
+        icon = 'home'
+
+[[menu.main]]
+    identifier = 'archives'
+    name = '归档'
+    url = '/archives/'
+    weight = 2
+    [menu.main.params]
+        icon = 'archives'
+
+[[menu.main]]
+    identifier = 'search'
+    name = '搜索'
+    url = '/search/'
+    weight = 3
+    [menu.main.params]
+        icon = 'search'
+
+[markup]
+[markup.highlight]
+    noClasses = false
+    codeFences = true
+    guessSyntax = true
+    lineNoStart = 1
+    lineNos = true
+    style = 'monokai'
+
+[markup.tableOfContents]
+    endLevel = 4
+    ordered = true
+    startLevel = 2
+
+[markup.goldmark.renderer]
+    unsafe = true
+
+[related]
+    includeNewer = true
+    threshold = 60
+    toLower = false
+
+[[related.indices]]
+    name = 'tags'
+    weight = 100
+
+[[related.indices]]
+    name = 'categories'
+    weight = 200
