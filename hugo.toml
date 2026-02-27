@@ -22,7 +22,7 @@ hasCJKLanguage = true
 [params.sidebar]
     emoji = ''
     subtitle = '个人博客 & 资源分享'
-    avatar = ''
+    avatar = 'img/avatar.jpg'
 
 [params.article]
     math = false
