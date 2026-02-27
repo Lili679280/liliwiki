@@ -1,6 +1,6 @@
 baseURL = 'https://liliwiki.com/'
 languageCode = 'zh-cn'
-title = 'LiliWiki'
+title = 'LiliWiki - 立里的博客'
 theme = 'hugo-theme-stack'
 
 paginate = 10
@@ -11,6 +11,7 @@ hasCJKLanguage = true
     featuredImageField = 'image'
     rssFullContent = true
     favicon = ''
+    description = 'LiliWiki - 立里的个人博客，分享技术文章与资源'
 
 [params.footer]
     since = 2025
