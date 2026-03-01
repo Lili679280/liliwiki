@@ -92,7 +92,7 @@ hasCJKLanguage = true
 [[menu.main]]
     identifier = 'admin'
     name = '管理'
-    url = 'https://auth.liliwiki.com/dashboard'
+    url = 'https://auth.liliwiki.com/admin'
     weight = 5
     [menu.main.params]
         icon = 'settings'

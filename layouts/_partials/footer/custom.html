@@ -1,7 +1,7 @@
 <script>
 (function() {
   var match = document.cookie.match(/(?:^|;\s*)lili_user=([^;]*)/);
-  var adminLink = document.querySelector('#main-menu a[href*="auth.liliwiki.com/dashboard"]');
+  var adminLink = document.querySelector('#main-menu a[href*="auth.liliwiki.com/admin"]');
   if (adminLink) adminLink.closest('li').style.display = 'none';
 
   if (match) {
