@@ -81,6 +81,15 @@ hasCJKLanguage = true
     [menu.main.params]
         icon = 'search'
 
+[[menu.main]]
+    identifier = 'login'
+    name = '登录'
+    url = 'https://auth.liliwiki.com/login'
+    weight = 4
+    [menu.main.params]
+        icon = 'user'
+        newTab = true
+
 [markup]
 [markup.highlight]
     noClasses = false
