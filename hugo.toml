@@ -89,6 +89,14 @@ hasCJKLanguage = true
     [menu.main.params]
         icon = 'user'
 
+[[menu.main]]
+    identifier = 'admin'
+    name = '管理'
+    url = 'https://auth.liliwiki.com/dashboard'
+    weight = 5
+    [menu.main.params]
+        icon = 'settings'
+
 [markup]
 [markup.highlight]
     noClasses = false

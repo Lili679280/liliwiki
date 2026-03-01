@@ -1,17 +1,28 @@
 <script>
 (function() {
   var match = document.cookie.match(/(?:^|;\s*)lili_user=([^;]*)/);
+  var adminLink = document.querySelector('#main-menu a[href*="auth.liliwiki.com/dashboard"]');
+  if (adminLink) adminLink.closest('li').style.display = 'none';
+
   if (match) {
-    var username = decodeURIComponent(match[1]);
-    var links = document.querySelectorAll('#main-menu a[href*="auth.liliwiki.com"]');
-    links.forEach(function(a) {
+    var decoded = decodeURIComponent(match[1]);
+    var parts = decoded.split(':');
+    var username = parts[0];
+    var role = parts[1] || 'user';
+
+    var loginLinks = document.querySelectorAll('#main-menu a[href*="auth.liliwiki.com/login"]');
+    loginLinks.forEach(function(a) {
       var span = a.querySelector('span');
       if (span) span.textContent = username;
       a.href = 'https://auth.liliwiki.com/dashboard';
     });
+
+    if ((role === 'admin' || role === 'sub_admin') && adminLink) {
+      adminLink.closest('li').style.display = '';
+    }
   } else {
-    var links = document.querySelectorAll('#main-menu a[href*="auth.liliwiki.com"]');
-    links.forEach(function(a) {
+    var loginLinks = document.querySelectorAll('#main-menu a[href*="auth.liliwiki.com/login"]');
+    loginLinks.forEach(function(a) {
       a.href = 'https://auth.liliwiki.com/login?redirect=' + encodeURIComponent(window.location.href);
     });
   }
