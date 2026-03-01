@@ -1,6 +1,6 @@
 baseURL = 'https://liliwiki.com/'
 languageCode = 'zh-cn'
-title = 'LiliWiki - 立里的博客 | 立里博客'
+title = 'LiliWiki - 立里的博客'
 theme = 'hugo-theme-stack'
 
 paginate = 10
