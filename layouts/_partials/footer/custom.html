@@ -1,0 +1,19 @@
+<script>
+(function() {
+  var match = document.cookie.match(/(?:^|;\s*)lili_user=([^;]*)/);
+  if (match) {
+    var username = decodeURIComponent(match[1]);
+    var links = document.querySelectorAll('#main-menu a[href*="auth.liliwiki.com"]');
+    links.forEach(function(a) {
+      var span = a.querySelector('span');
+      if (span) span.textContent = username;
+      a.href = 'https://auth.liliwiki.com/dashboard';
+    });
+  } else {
+    var links = document.querySelectorAll('#main-menu a[href*="auth.liliwiki.com"]');
+    links.forEach(function(a) {
+      a.href = 'https://auth.liliwiki.com/login?redirect=' + encodeURIComponent(window.location.href);
+    });
+  }
+})();
+</script>
