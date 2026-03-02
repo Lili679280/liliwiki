@@ -1,0 +1,238 @@
+{{ if .Site.Params.comments.enabled }}
+<section id="comments" class="article-comments">
+  <!-- Share buttons -->
+  <div class="article-share" id="shareSection">
+    <span class="share-label">分享本文</span>
+    <div class="share-buttons">
+      <a id="shareTwitter" target="_blank" rel="noopener" class="share-btn share-twitter">X</a>
+      <a id="shareWeibo" target="_blank" rel="noopener" class="share-btn share-weibo">微博</a>
+      <a id="shareQQ" target="_blank" rel="noopener" class="share-btn share-qq">QQ</a>
+      <button class="share-btn share-copy" id="shareCopyBtn">复制链接</button>
+    </div>
+  </div>
+
+  <!-- Comment section -->
+  <div class="comment-section">
+    <h3 class="comment-title">💬 评论</h3>
+
+    <!-- Comment form (shown when logged in) -->
+    <div id="commentForm" style="display:none">
+      <div class="comment-user-info" id="commentUserInfo"></div>
+      <textarea id="commentInput" class="comment-textarea" placeholder="写下你的评论..." maxlength="1000" rows="3"></textarea>
+      <div class="comment-form-footer">
+        <span class="comment-char-count"><span id="charCount">0</span>/1000</span>
+        <button class="comment-submit" id="commentSubmit" onclick="submitComment()">发送</button>
+      </div>
+      <div id="commentAlert" class="comment-alert" style="display:none"></div>
+    </div>
+
+    <!-- Login prompt (shown when not logged in) -->
+    <div id="loginPrompt" style="display:none" class="comment-login-prompt">
+      <p>登录后即可评论</p>
+      <a id="loginLink" class="comment-login-btn">登录 / 注册</a>
+    </div>
+
+    <!-- Comment list -->
+    <div id="commentList" class="comment-list">
+      <div class="comment-loading">加载中...</div>
+    </div>
+  </div>
+</section>
+
+<script>
+(function() {
+  var API = 'https://auth.liliwiki.com';
+  var pageUrl = window.location.pathname;
+  var currentUser = null;
+  var isAdmin = false;
+  var replyTo = null;
+
+  // Init share buttons
+  var t = encodeURIComponent(document.title);
+  var u = encodeURIComponent(window.location.href);
+  document.getElementById('shareTwitter').href = 'https://twitter.com/intent/tweet?text=' + t + '&url=' + u;
+  document.getElementById('shareWeibo').href = 'https://service.weibo.com/share/share.php?title=' + t + '&url=' + u;
+  document.getElementById('shareQQ').href = 'https://connect.qq.com/widget/shareqq/index.html?title=' + t + '&url=' + u;
+  document.getElementById('shareCopyBtn').addEventListener('click', function() {
+    var btn = this;
+    navigator.clipboard.writeText(window.location.href).then(function() {
+      btn.textContent = '已复制 ✓';
+      setTimeout(function() { btn.textContent = '复制链接'; }, 2000);
+    });
+  });
+
+  // Check login status
+  fetch(API + '/api/me', { credentials: 'include' })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.email) {
+        currentUser = data;
+        isAdmin = data.role === 'admin' || data.role === 'sub_admin';
+        document.getElementById('commentForm').style.display = 'block';
+        document.getElementById('loginPrompt').style.display = 'none';
+        document.getElementById('commentUserInfo').innerHTML =
+          '<span class="comment-avatar">' + escapeH(data.username || data.email)[0].toUpperCase() + '</span>' +
+          '<span class="comment-username">' + escapeH(data.username || data.email) + '</span>';
+      } else {
+        document.getElementById('commentForm').style.display = 'none';
+        document.getElementById('loginPrompt').style.display = 'block';
+        document.getElementById('loginLink').href = API + '/login?redirect=' + encodeURIComponent(window.location.href);
+      }
+    })
+    .catch(function() {
+      document.getElementById('commentForm').style.display = 'none';
+      document.getElementById('loginPrompt').style.display = 'block';
+      document.getElementById('loginLink').href = API + '/login?redirect=' + encodeURIComponent(window.location.href);
+    });
+
+  // Load comments
+  loadComments();
+
+  // Char counter
+  document.getElementById('commentInput').addEventListener('input', function() {
+    document.getElementById('charCount').textContent = this.value.length;
+  });
+
+  function loadComments() {
+    fetch(API + '/api/comments?url=' + encodeURIComponent(pageUrl), { credentials: 'include' })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        var list = document.getElementById('commentList');
+        var comments = data.comments || [];
+        if (comments.length === 0) {
+          list.innerHTML = '<div class="comment-empty">暂无评论，来说两句吧</div>';
+          return;
+        }
+        // Build tree
+        var roots = [];
+        var children = {};
+        comments.forEach(function(c) {
+          if (c.parent_id) {
+            if (!children[c.parent_id]) children[c.parent_id] = [];
+            children[c.parent_id].push(c);
+          } else {
+            roots.push(c);
+          }
+        });
+        var html = '';
+        roots.forEach(function(c) {
+          html += renderComment(c, children, 0);
+        });
+        list.innerHTML = html;
+      })
+      .catch(function() {
+        document.getElementById('commentList').innerHTML = '<div class="comment-empty">评论加载失败</div>';
+      });
+  }
+
+  function renderComment(c, children, depth) {
+    var time = new Date(c.created_at);
+    var timeStr = time.getFullYear() + '-' + pad(time.getMonth()+1) + '-' + pad(time.getDate()) + ' ' + pad(time.getHours()) + ':' + pad(time.getMinutes());
+    var initial = (c.user_name || '?')[0].toUpperCase();
+    var depthClass = depth > 0 ? ' comment-reply' : '';
+    var adminBadge = '';
+    var deleteBtn = isAdmin ? '<button class="comment-delete" onclick="deleteComment(\'' + c.id + '\')">删除</button>' : '';
+    var replyBtn = currentUser ? '<button class="comment-reply-btn" onclick="setReply(\'' + c.id + '\', \'' + escapeH(c.user_name) + '\')">回复</button>' : '';
+
+    var html = '<div class="comment-item' + depthClass + '" id="comment-' + c.id + '">' +
+      '<div class="comment-header">' +
+        '<span class="comment-avatar">' + escapeH(initial) + '</span>' +
+        '<span class="comment-username">' + escapeH(c.user_name) + '</span>' + adminBadge +
+        '<span class="comment-time">' + timeStr + '</span>' +
+      '</div>' +
+      '<div class="comment-body">' + escapeH(c.content) + '</div>' +
+      '<div class="comment-actions">' + replyBtn + deleteBtn + '</div>' +
+    '</div>';
+
+    if (children[c.id]) {
+      children[c.id].forEach(function(child) {
+        html += renderComment(child, children, depth + 1);
+      });
+    }
+    return html;
+  }
+
+  function pad(n) { return n < 10 ? '0' + n : '' + n; }
+  function escapeH(s) { if (!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+  window.submitComment = function() {
+    var input = document.getElementById('commentInput');
+    var content = input.value.trim();
+    if (!content) return;
+
+    var btn = document.getElementById('commentSubmit');
+    btn.disabled = true;
+    btn.textContent = '发送中...';
+
+    fetch(API + '/api/comments', {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url: pageUrl, content: content, parent_id: replyTo || '' })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      btn.disabled = false;
+      btn.textContent = '发送';
+      if (data.error) {
+        showAlert(data.error, 'error');
+      } else {
+        input.value = '';
+        document.getElementById('charCount').textContent = '0';
+        cancelReply();
+        loadComments();
+      }
+    })
+    .catch(function() {
+      btn.disabled = false;
+      btn.textContent = '发送';
+      showAlert('发送失败，请重试', 'error');
+    });
+  };
+
+  window.deleteComment = function(id) {
+    if (!confirm('确定删除这条评论？')) return;
+    fetch(API + '/api/comments/delete', {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: id })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.ok) loadComments();
+      else showAlert(data.error || '删除失败', 'error');
+    });
+  };
+
+  window.setReply = function(id, name) {
+    replyTo = id;
+    var input = document.getElementById('commentInput');
+    input.placeholder = '回复 ' + name + '...';
+    input.focus();
+    var existing = document.getElementById('replyIndicator');
+    if (existing) existing.remove();
+    var indicator = document.createElement('div');
+    indicator.id = 'replyIndicator';
+    indicator.className = 'reply-indicator';
+    indicator.innerHTML = '回复 <b>' + escapeH(name) + '</b> <button onclick="cancelReply()" class="reply-cancel">✕</button>';
+    input.parentNode.insertBefore(indicator, input);
+  };
+
+  window.cancelReply = function() {
+    replyTo = null;
+    document.getElementById('commentInput').placeholder = '写下你的评论...';
+    var existing = document.getElementById('replyIndicator');
+    if (existing) existing.remove();
+  };
+
+  function showAlert(msg, type) {
+    var el = document.getElementById('commentAlert');
+    el.textContent = msg;
+    el.className = 'comment-alert comment-alert-' + type;
+    el.style.display = 'block';
+    setTimeout(function() { el.style.display = 'none'; }, 3000);
+  }
+})();
+</script>
+{{ end }}

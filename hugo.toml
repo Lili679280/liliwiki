@@ -35,13 +35,7 @@ hasCJKLanguage = true
 
 [params.comments]
     enabled = true
-    provider = "twikoo"
-
-[params.comments.twikoo]
-    envId = "https://liliwiki-comment.wyyx2747287154.workers.dev"
-    region = ""
-    path = ""
-    lang = "zh-CN"
+    provider = ""
 
 [[params.widgets.homepage]]
     type = 'search'
