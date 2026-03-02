@@ -34,7 +34,22 @@ hasCJKLanguage = true
     enabled = false
 
 [params.comments]
-    enabled = false
+    enabled = true
+    provider = "giscus"
+
+[params.comments.giscus]
+    repo = "Lili679280/liliwiki"
+    repoID = "R_kgDORaci5g"
+    category = "Announcements"
+    categoryID = "DIC_kwDORaci5s4C3i4O"
+    mapping = "pathname"
+    strict = "0"
+    reactionsEnabled = "1"
+    emitMetadata = "0"
+    inputPosition = "top"
+    theme = "preferred_color_scheme"
+    lang = "zh-CN"
+    loading = "lazy"
 
 [[params.widgets.homepage]]
     type = 'search'
