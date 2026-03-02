@@ -35,21 +35,13 @@ hasCJKLanguage = true
 
 [params.comments]
     enabled = true
-    provider = "giscus"
+    provider = "twikoo"
 
-[params.comments.giscus]
-    repo = "Lili679280/liliwiki"
-    repoID = "R_kgDORaci5g"
-    category = "Announcements"
-    categoryID = "DIC_kwDORaci5s4C3i4O"
-    mapping = "pathname"
-    strict = "0"
-    reactionsEnabled = "1"
-    emitMetadata = "0"
-    inputPosition = "top"
-    theme = "preferred_color_scheme"
+[params.comments.twikoo]
+    envId = "https://liliwiki-comment.wyyx2747287154.workers.dev"
+    region = ""
+    path = ""
     lang = "zh-CN"
-    loading = "lazy"
 
 [[params.widgets.homepage]]
     type = 'search'
