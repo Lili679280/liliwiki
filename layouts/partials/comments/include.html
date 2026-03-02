@@ -1,70 +1,76 @@
 {{ if .Site.Params.comments.enabled }}
 <style>
-.article-share{margin:0 0 1.5rem;padding:1.2rem;background:var(--card-background);border-radius:var(--card-border-radius,10px);box-shadow:var(--shadow-l1)}
-.share-label{font-size:.9rem;font-weight:600;color:var(--card-text-color-main);margin-bottom:.6rem;display:block}
-.share-buttons{display:flex;gap:.5rem;flex-wrap:wrap}
-.share-btn{display:inline-flex;align-items:center;padding:.4rem .9rem;border-radius:6px;font-size:.82rem;font-weight:500;text-decoration:none;border:1px solid var(--card-separator-color,#eee);color:var(--card-text-color-secondary,#666);background:transparent;cursor:pointer;transition:all .15s}
-.share-btn:hover{border-color:var(--accent-color,#667eea);color:var(--accent-color,#667eea)}
-.share-twitter:hover{border-color:#1da1f2;color:#1da1f2}
-.share-weibo:hover{border-color:#e6162d;color:#e6162d}
-.share-qq:hover{border-color:#12b7f5;color:#12b7f5}
-.comment-section{padding:1.5rem;background:var(--card-background);border-radius:var(--card-border-radius,10px);box-shadow:var(--shadow-l1)}
-.comment-title{font-size:1.1rem;font-weight:600;color:var(--card-text-color-main);margin-bottom:1rem}
-.comment-textarea{width:100%;padding:.7rem;border:1.5px solid var(--card-separator-color,#e0e0e0);border-radius:8px;font-size:.9rem;font-family:inherit;resize:vertical;min-height:80px;outline:none;transition:border-color .2s;background:var(--body-background,#fff);color:var(--card-text-color-main)}
-.comment-textarea:focus{border-color:#667eea;box-shadow:0 0 0 3px rgba(102,126,234,.12)}
-.comment-form-footer{display:flex;justify-content:space-between;align-items:center;margin-top:.5rem}
-.comment-char-count{font-size:.78rem;color:var(--card-text-color-tertiary,#999)}
-.comment-submit{padding:.45rem 1.2rem;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;transition:transform .15s,box-shadow .15s}
-.comment-submit:hover{transform:translateY(-1px);box-shadow:0 3px 10px rgba(102,126,234,.3)}
+/* Share CTA */
+.share-cta{text-align:center;padding:2rem 1rem;margin-bottom:1.5rem}
+.share-cta p{font-size:1rem;color:var(--card-text-color-secondary,#666);margin-bottom:1rem}
+.share-trigger{display:inline-flex;align-items:center;gap:.4rem;padding:.6rem 1.5rem;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:10px;font-size:.95rem;font-weight:600;cursor:pointer;transition:transform .15s,box-shadow .15s;position:relative}
+.share-trigger:hover{transform:translateY(-2px);box-shadow:0 4px 15px rgba(102,126,234,.35)}
+.share-dropdown{display:none;position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--card-background,#fff);border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,.15);padding:.5rem;min-width:160px;z-index:100}
+.share-dropdown.show{display:block;animation:sdIn .15s ease}
+@keyframes sdIn{from{opacity:0;transform:translateX(-50%) translateY(4px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+.share-dropdown a,.share-dropdown button{display:flex;align-items:center;gap:.5rem;width:100%;padding:.55rem .8rem;border:none;background:none;border-radius:6px;font-size:.88rem;color:var(--card-text-color-main,#333);text-decoration:none;cursor:pointer;transition:background .1s}
+.share-dropdown a:hover,.share-dropdown button:hover{background:rgba(102,126,234,.08)}
+.share-dropdown .sd-icon{width:20px;text-align:center;font-weight:700}
+/* Comment section */
+.comment-section{padding:1.5rem 0}
+.comment-title{font-size:1.15rem;font-weight:700;color:var(--card-text-color-main);margin-bottom:1.2rem;padding-bottom:.6rem;border-bottom:2px solid var(--card-separator-color,#eee)}
+.comment-textarea{width:100%;padding:.8rem 1rem;border:1.5px solid var(--card-separator-color,#e0e0e0);border-radius:10px;font-size:.95rem;font-family:inherit;resize:vertical;min-height:120px;outline:none;transition:border-color .2s;background:var(--body-background,#fff);color:var(--card-text-color-main)}
+.comment-textarea:focus{border-color:#667eea;box-shadow:0 0 0 3px rgba(102,126,234,.1)}
+.comment-form-footer{display:flex;justify-content:space-between;align-items:center;margin-top:.6rem}
+.comment-char-count{font-size:.8rem;color:var(--card-text-color-tertiary,#999)}
+.comment-submit{padding:.5rem 1.5rem;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:10px;font-size:.9rem;font-weight:600;cursor:pointer;transition:transform .15s,box-shadow .15s}
+.comment-submit:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(102,126,234,.3)}
 .comment-submit:disabled{opacity:.5;cursor:not-allowed;transform:none}
-.comment-user-info{display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem;font-size:.85rem;color:var(--card-text-color-secondary)}
-.comment-login-prompt{text-align:center;padding:1.5rem;color:var(--card-text-color-secondary,#888)}
-.comment-login-prompt p{margin-bottom:.8rem;font-size:.9rem}
-.comment-login-btn{display:inline-block;padding:.5rem 1.5rem;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff!important;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:600;transition:transform .15s}
+.comment-user-info{display:flex;align-items:center;gap:.6rem;margin-bottom:.8rem;font-size:.9rem;color:var(--card-text-color-secondary)}
+.comment-login-prompt{text-align:center;padding:2rem;color:var(--card-text-color-secondary,#888)}
+.comment-login-prompt p{margin-bottom:1rem;font-size:.95rem}
+.comment-login-btn{display:inline-block;padding:.6rem 2rem;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff!important;border-radius:10px;text-decoration:none;font-size:.9rem;font-weight:600;transition:transform .15s}
 .comment-login-btn:hover{transform:translateY(-1px)}
-.comment-list{margin-top:1rem}
-.comment-empty{text-align:center;padding:1.5rem;color:var(--card-text-color-tertiary,#aaa);font-size:.88rem}
-.comment-loading{text-align:center;padding:1rem;color:var(--card-text-color-tertiary,#aaa);font-size:.85rem}
-.comment-item{padding:.8rem 0;border-bottom:1px solid var(--card-separator-color,#f0f0f0)}
+.comment-list{margin-top:1.2rem}
+.comment-empty{text-align:center;padding:2rem;color:var(--card-text-color-tertiary,#aaa);font-size:.95rem}
+.comment-loading{text-align:center;padding:1.5rem;color:var(--card-text-color-tertiary,#aaa);font-size:.9rem}
+.comment-item{padding:1rem 0;border-bottom:1px solid var(--card-separator-color,#f0f0f0)}
 .comment-item:last-child{border-bottom:none}
-.comment-reply{margin-left:2rem;padding-left:.8rem;border-left:2px solid var(--card-separator-color,#e8e8e8)}
-.comment-header{display:flex;align-items:center;gap:.5rem;margin-bottom:.3rem}
-.comment-avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:600;flex-shrink:0}
-.comment-username{font-weight:600;font-size:.85rem;color:var(--card-text-color-main)}
-.comment-time{font-size:.75rem;color:var(--card-text-color-tertiary,#aaa);margin-left:auto}
-.comment-body{font-size:.9rem;line-height:1.6;color:var(--card-text-color-main);white-space:pre-wrap;word-break:break-word;padding-left:2.2rem}
-.comment-actions{padding-left:2.2rem;margin-top:.3rem}
-.comment-reply-btn,.comment-delete{background:none;border:none;font-size:.75rem;cursor:pointer;padding:.15rem .4rem;border-radius:4px;transition:all .15s}
+.comment-reply{margin-left:2.5rem;padding-left:1rem;border-left:2px solid var(--card-separator-color,#e8e8e8)}
+.comment-header{display:flex;align-items:center;gap:.6rem;margin-bottom:.4rem}
+.comment-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;flex-shrink:0}
+.comment-username{font-weight:600;font-size:.9rem;color:var(--card-text-color-main)}
+.comment-time{font-size:.78rem;color:var(--card-text-color-tertiary,#aaa);margin-left:auto}
+.comment-body{font-size:.95rem;line-height:1.7;color:var(--card-text-color-main);white-space:pre-wrap;word-break:break-word;padding-left:2.5rem;margin-top:.2rem}
+.comment-actions{padding-left:2.5rem;margin-top:.4rem}
+.comment-reply-btn,.comment-delete{background:none;border:none;font-size:.78rem;cursor:pointer;padding:.2rem .5rem;border-radius:4px;transition:all .15s}
 .comment-reply-btn{color:var(--card-text-color-tertiary,#999)}
 .comment-reply-btn:hover{color:#667eea;background:rgba(102,126,234,.08)}
 .comment-delete{color:#ef4444}
 .comment-delete:hover{background:rgba(239,68,68,.08)}
-.reply-indicator{font-size:.82rem;color:var(--card-text-color-secondary);margin-bottom:.4rem;padding:.3rem .6rem;background:rgba(102,126,234,.06);border-radius:6px;display:inline-flex;align-items:center;gap:.3rem}
-.reply-cancel{background:none;border:none;cursor:pointer;font-size:.8rem;color:var(--card-text-color-tertiary);padding:0 .2rem}
+.reply-indicator{font-size:.85rem;color:var(--card-text-color-secondary);margin-bottom:.5rem;padding:.35rem .7rem;background:rgba(102,126,234,.06);border-radius:6px;display:inline-flex;align-items:center;gap:.4rem}
+.reply-cancel{background:none;border:none;cursor:pointer;font-size:.85rem;color:var(--card-text-color-tertiary);padding:0 .2rem}
 .reply-cancel:hover{color:#ef4444}
-.comment-alert{padding:.5rem .8rem;border-radius:6px;font-size:.82rem;margin-top:.5rem}
+.comment-alert{padding:.6rem .9rem;border-radius:8px;font-size:.85rem;margin-top:.6rem}
 .comment-alert-error{background:#fef2f2;color:#dc2626;border:1px solid #fecaca}
 </style>
 <section id="comments" class="article-comments">
-  <!-- Share buttons -->
-  <div class="article-share" id="shareSection">
-    <span class="share-label">分享本文</span>
-    <div class="share-buttons">
-      <a id="shareTwitter" target="_blank" rel="noopener" class="share-btn share-twitter">X</a>
-      <a id="shareWeibo" target="_blank" rel="noopener" class="share-btn share-weibo">微博</a>
-      <a id="shareQQ" target="_blank" rel="noopener" class="share-btn share-qq">QQ</a>
-      <button class="share-btn share-copy" id="shareCopyBtn">复制链接</button>
-    </div>
+  <!-- Share CTA -->
+  <div class="share-cta">
+    <p>如果你喜欢这篇文章，请分享给更多人 ❤️</p>
+    <button class="share-trigger" id="shareBtn" onclick="toggleShare()">
+      ↗ 分享文章
+      <div class="share-dropdown" id="shareDropdown">
+        <a id="shareTwitter" target="_blank" rel="noopener"><span class="sd-icon">𝕏</span>Twitter / X</a>
+        <a id="shareWeibo" target="_blank" rel="noopener"><span class="sd-icon" style="color:#e6162d">W</span>微博</a>
+        <a id="shareQQ" target="_blank" rel="noopener"><span class="sd-icon" style="color:#12b7f5">Q</span>QQ</a>
+        <button id="shareCopyBtn"><span class="sd-icon">🔗</span>复制链接</button>
+      </div>
+    </button>
   </div>
 
   <!-- Comment section -->
   <div class="comment-section">
     <h3 class="comment-title">💬 评论</h3>
 
-    <!-- Comment form (shown when logged in) -->
     <div id="commentForm" style="display:none">
       <div class="comment-user-info" id="commentUserInfo"></div>
-      <textarea id="commentInput" class="comment-textarea" placeholder="写下你的评论..." maxlength="1000" rows="3"></textarea>
+      <textarea id="commentInput" class="comment-textarea" placeholder="写下你的评论..." maxlength="1000" rows="4"></textarea>
       <div class="comment-form-footer">
         <span class="comment-char-count"><span id="charCount">0</span>/1000</span>
         <button class="comment-submit" id="commentSubmit" onclick="submitComment()">发送</button>
@@ -72,13 +78,11 @@
       <div id="commentAlert" class="comment-alert" style="display:none"></div>
     </div>
 
-    <!-- Login prompt (shown when not logged in) -->
     <div id="loginPrompt" style="display:none" class="comment-login-prompt">
       <p>登录后即可评论</p>
       <a id="loginLink" class="comment-login-btn">登录 / 注册</a>
     </div>
 
-    <!-- Comment list -->
     <div id="commentList" class="comment-list">
       <div class="comment-loading">加载中...</div>
     </div>
@@ -93,21 +97,32 @@
   var isAdmin = false;
   var replyTo = null;
 
-  // Init share buttons
-  var t = encodeURIComponent(document.title);
-  var u = encodeURIComponent(window.location.href);
-  document.getElementById('shareTwitter').href = 'https://twitter.com/intent/tweet?text=' + t + '&url=' + u;
-  document.getElementById('shareWeibo').href = 'https://service.weibo.com/share/share.php?title=' + t + '&url=' + u;
-  document.getElementById('shareQQ').href = 'https://connect.qq.com/widget/shareqq/index.html?title=' + t + '&url=' + u;
-  document.getElementById('shareCopyBtn').addEventListener('click', function() {
+  // Share buttons
+  var et = encodeURIComponent(document.title);
+  var eu = encodeURIComponent(window.location.href);
+  document.getElementById('shareTwitter').href = 'https://twitter.com/intent/tweet?text=' + et + '&url=' + eu;
+  document.getElementById('shareWeibo').href = 'https://service.weibo.com/share/share.php?title=' + et + '&url=' + eu;
+  document.getElementById('shareQQ').href = 'https://connect.qq.com/widget/shareqq/index.html?title=' + et + '&url=' + eu;
+
+  window.toggleShare = function() {
+    var dd = document.getElementById('shareDropdown');
+    dd.classList.toggle('show');
+  };
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.share-trigger')) {
+      document.getElementById('shareDropdown').classList.remove('show');
+    }
+  });
+  document.getElementById('shareCopyBtn').addEventListener('click', function(e) {
+    e.stopPropagation();
     var btn = this;
     navigator.clipboard.writeText(window.location.href).then(function() {
-      btn.textContent = '已复制 ✓';
-      setTimeout(function() { btn.textContent = '复制链接'; }, 2000);
+      btn.innerHTML = '<span class="sd-icon">\u2713</span>\u5DF2\u590D\u5236';
+      setTimeout(function() { btn.innerHTML = '<span class="sd-icon">\uD83D\uDD17</span>\u590D\u5236\u94FE\u63A5'; }, 2000);
     });
   });
 
-  // Check login status
+  // Check login
   fetch(API + '/api/me', { credentials: 'include' })
     .then(function(r) { return r.json(); })
     .then(function(data) {
@@ -118,24 +133,20 @@
         document.getElementById('commentForm').style.display = 'block';
         document.getElementById('loginPrompt').style.display = 'none';
         document.getElementById('commentUserInfo').innerHTML =
-          '<span class="comment-avatar">' + escapeH(u.username || u.email)[0].toUpperCase() + '</span>' +
-          '<span class="comment-username">' + escapeH(u.username || u.email) + '</span>';
-      } else {
-        document.getElementById('commentForm').style.display = 'none';
-        document.getElementById('loginPrompt').style.display = 'block';
-        document.getElementById('loginLink').href = API + '/login?redirect=' + encodeURIComponent(window.location.href);
-      }
+          '<span class="comment-avatar">' + esc(u.username || u.email)[0].toUpperCase() + '</span>' +
+          '<span class="comment-username">' + esc(u.username || u.email) + '</span>';
+      } else { showLogin(); }
     })
-    .catch(function() {
-      document.getElementById('commentForm').style.display = 'none';
-      document.getElementById('loginPrompt').style.display = 'block';
-      document.getElementById('loginLink').href = API + '/login?redirect=' + encodeURIComponent(window.location.href);
-    });
+    .catch(function() { showLogin(); });
 
-  // Load comments
+  function showLogin() {
+    document.getElementById('commentForm').style.display = 'none';
+    document.getElementById('loginPrompt').style.display = 'block';
+    document.getElementById('loginLink').href = API + '/login?redirect=' + encodeURIComponent(window.location.href);
+  }
+
   loadComments();
 
-  // Char counter
   document.getElementById('commentInput').addEventListener('input', function() {
     document.getElementById('charCount').textContent = this.value.length;
   });
@@ -146,131 +157,86 @@
       .then(function(data) {
         var list = document.getElementById('commentList');
         var comments = data.comments || [];
-        if (comments.length === 0) {
-          list.innerHTML = '<div class="comment-empty">暂无评论，来说两句吧</div>';
-          return;
-        }
-        // Build tree
-        var roots = [];
-        var children = {};
+        if (comments.length === 0) { list.innerHTML = '<div class="comment-empty">\u6682\u65E0\u8BC4\u8BBA\uFF0C\u6765\u8BF4\u4E24\u53E5\u5427</div>'; return; }
+        var roots = [], children = {};
         comments.forEach(function(c) {
-          if (c.parent_id) {
-            if (!children[c.parent_id]) children[c.parent_id] = [];
-            children[c.parent_id].push(c);
-          } else {
-            roots.push(c);
-          }
+          if (c.parent_id) { if (!children[c.parent_id]) children[c.parent_id] = []; children[c.parent_id].push(c); }
+          else { roots.push(c); }
         });
         var html = '';
-        roots.forEach(function(c) {
-          html += renderComment(c, children, 0);
-        });
+        roots.forEach(function(c) { html += renderComment(c, children, 0); });
         list.innerHTML = html;
       })
-      .catch(function() {
-        document.getElementById('commentList').innerHTML = '<div class="comment-empty">评论加载失败</div>';
-      });
+      .catch(function() { document.getElementById('commentList').innerHTML = '<div class="comment-empty">\u8BC4\u8BBA\u52A0\u8F7D\u5931\u8D25</div>'; });
   }
 
-  function renderComment(c, children, depth) {
+  function renderComment(c, ch, depth) {
     var time = new Date(c.created_at);
-    var timeStr = time.getFullYear() + '-' + pad(time.getMonth()+1) + '-' + pad(time.getDate()) + ' ' + pad(time.getHours()) + ':' + pad(time.getMinutes());
+    var ts = time.getFullYear()+'-'+pad(time.getMonth()+1)+'-'+pad(time.getDate())+' '+pad(time.getHours())+':'+pad(time.getMinutes());
     var initial = (c.user_name || '?')[0].toUpperCase();
-    var depthClass = depth > 0 ? ' comment-reply' : '';
-    var adminBadge = '';
-    var deleteBtn = isAdmin ? '<button class="comment-delete" onclick="deleteComment(\'' + c.id + '\')">删除</button>' : '';
-    var replyBtn = currentUser ? '<button class="comment-reply-btn" onclick="setReply(\'' + c.id + '\', \'' + escapeH(c.user_name) + '\')">回复</button>' : '';
-
-    var html = '<div class="comment-item' + depthClass + '" id="comment-' + c.id + '">' +
-      '<div class="comment-header">' +
-        '<span class="comment-avatar">' + escapeH(initial) + '</span>' +
-        '<span class="comment-username">' + escapeH(c.user_name) + '</span>' + adminBadge +
-        '<span class="comment-time">' + timeStr + '</span>' +
-      '</div>' +
-      '<div class="comment-body">' + escapeH(c.content) + '</div>' +
-      '<div class="comment-actions">' + replyBtn + deleteBtn + '</div>' +
-    '</div>';
-
-    if (children[c.id]) {
-      children[c.id].forEach(function(child) {
-        html += renderComment(child, children, depth + 1);
-      });
-    }
-    return html;
+    var dc = depth > 0 ? ' comment-reply' : '';
+    var del = isAdmin ? '<button class="comment-delete" onclick="deleteComment(\''+c.id+'\')">删除</button>' : '';
+    var rpl = currentUser ? '<button class="comment-reply-btn" onclick="setReply(\''+c.id+'\',\''+esc(c.user_name)+'\')">回复</button>' : '';
+    var h = '<div class="comment-item'+dc+'" id="comment-'+c.id+'">' +
+      '<div class="comment-header"><span class="comment-avatar">'+esc(initial)+'</span><span class="comment-username">'+esc(c.user_name)+'</span><span class="comment-time">'+ts+'</span></div>' +
+      '<div class="comment-body">'+esc(c.content)+'</div>' +
+      '<div class="comment-actions">'+rpl+del+'</div></div>';
+    if (ch[c.id]) { ch[c.id].forEach(function(child) { h += renderComment(child, ch, depth+1); }); }
+    return h;
   }
 
-  function pad(n) { return n < 10 ? '0' + n : '' + n; }
-  function escapeH(s) { if (!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function pad(n) { return n<10?'0'+n:''+n; }
+  function esc(s) { return s?String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'):''; }
+
+  // POST with text/plain to avoid CORS preflight (WAF blocks OPTIONS)
+  function postAPI(path, data) {
+    return fetch(API + path, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(data)
+    }).then(function(r) { return r.json(); });
+  }
 
   window.submitComment = function() {
     var input = document.getElementById('commentInput');
     var content = input.value.trim();
     if (!content) return;
-
     var btn = document.getElementById('commentSubmit');
-    btn.disabled = true;
-    btn.textContent = '发送中...';
-
-    fetch(API + '/api/comments', {
-      method: 'POST',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ url: pageUrl, content: content, parent_id: replyTo || '' })
-    })
-    .then(function(r) { return r.json(); })
+    btn.disabled = true; btn.textContent = '\u53D1\u9001\u4E2D...';
+    postAPI('/api/comments', { url: pageUrl, content: content, parent_id: replyTo || '' })
     .then(function(data) {
-      btn.disabled = false;
-      btn.textContent = '发送';
-      if (data.error) {
-        showAlert(data.error, 'error');
-      } else {
-        input.value = '';
-        document.getElementById('charCount').textContent = '0';
-        cancelReply();
-        loadComments();
-      }
+      btn.disabled = false; btn.textContent = '\u53D1\u9001';
+      if (data.error) { showAlert(data.error, 'error'); }
+      else { input.value = ''; document.getElementById('charCount').textContent = '0'; cancelReply(); loadComments(); }
     })
-    .catch(function() {
-      btn.disabled = false;
-      btn.textContent = '发送';
-      showAlert('发送失败，请重试', 'error');
-    });
+    .catch(function() { btn.disabled = false; btn.textContent = '\u53D1\u9001'; showAlert('\u53D1\u9001\u5931\u8D25\uFF0C\u8BF7\u91CD\u8BD5', 'error'); });
   };
 
   window.deleteComment = function(id) {
-    if (!confirm('确定删除这条评论？')) return;
-    fetch(API + '/api/comments/delete', {
-      method: 'POST',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: id })
-    })
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-      if (data.ok) loadComments();
-      else showAlert(data.error || '删除失败', 'error');
-    });
+    if (!confirm('\u786E\u5B9A\u5220\u9664\u8FD9\u6761\u8BC4\u8BBA\uFF1F')) return;
+    postAPI('/api/comments/delete', { id: id })
+    .then(function(data) { if (data.ok) loadComments(); else showAlert(data.error||'\u5220\u9664\u5931\u8D25','error'); });
   };
 
   window.setReply = function(id, name) {
     replyTo = id;
     var input = document.getElementById('commentInput');
-    input.placeholder = '回复 ' + name + '...';
+    input.placeholder = '\u56DE\u590D ' + name + '...';
     input.focus();
-    var existing = document.getElementById('replyIndicator');
-    if (existing) existing.remove();
-    var indicator = document.createElement('div');
-    indicator.id = 'replyIndicator';
-    indicator.className = 'reply-indicator';
-    indicator.innerHTML = '回复 <b>' + escapeH(name) + '</b> <button onclick="cancelReply()" class="reply-cancel">✕</button>';
-    input.parentNode.insertBefore(indicator, input);
+    var ex = document.getElementById('replyIndicator');
+    if (ex) ex.remove();
+    var ind = document.createElement('div');
+    ind.id = 'replyIndicator'; ind.className = 'reply-indicator';
+    ind.innerHTML = '\u56DE\u590D <b>' + esc(name) + '</b> <button onclick="cancelReply()" class="reply-cancel">\u2715</button>';
+    input.parentNode.insertBefore(ind, input);
   };
 
   window.cancelReply = function() {
     replyTo = null;
-    document.getElementById('commentInput').placeholder = '写下你的评论...';
-    var existing = document.getElementById('replyIndicator');
-    if (existing) existing.remove();
+    document.getElementById('commentInput').placeholder = '\u5199\u4E0B\u4F60\u7684\u8BC4\u8BBA...';
+    var ex = document.getElementById('replyIndicator');
+    if (ex) ex.remove();
   };
 
   function showAlert(msg, type) {
