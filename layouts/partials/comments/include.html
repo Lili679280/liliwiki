@@ -1,265 +1,203 @@
 {{ if .Site.Params.comments.enabled }}
 <style>
-/* Share CTA - injected into article */
-.share-cta{text-align:center;padding:1.5rem 0;margin-top:2rem;border-top:1px solid var(--card-separator-color,#eee)}
-.share-cta p{font-size:.95rem;color:var(--card-text-color-secondary,#666);margin-bottom:.8rem}
-.share-trigger{display:inline-flex;align-items:center;gap:.4rem;padding:.5rem 1.3rem;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;transition:transform .15s,box-shadow .15s;position:relative}
-.share-trigger:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(102,126,234,.3)}
-.share-dropdown{display:none;position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--card-background,#fff);border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,.15);padding:.5rem;min-width:160px;z-index:100}
-.share-dropdown.show{display:block;animation:sdIn .15s ease}
-@keyframes sdIn{from{opacity:0;transform:translateX(-50%) translateY(4px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
-.share-dropdown a,.share-dropdown button{display:flex;align-items:center;gap:.5rem;width:100%;padding:.5rem .8rem;border:none;background:none;border-radius:6px;font-size:.88rem;color:var(--card-text-color-main,#333);text-decoration:none;cursor:pointer;transition:background .1s}
-.share-dropdown a:hover,.share-dropdown button:hover{background:rgba(102,126,234,.08)}
-.share-dropdown .sd-icon{width:20px;text-align:center;font-weight:700}
+/* Share - injected into article */
+.share-end{display:flex;align-items:center;justify-content:space-between;margin-top:2rem;padding-top:1.2rem;border-top:1px solid var(--card-separator-color,#eee)}
+.share-end p{font-size:.92rem;color:var(--card-text-color-tertiary,#999);margin:0}
+.share-wrap{position:relative}
+.share-trigger{display:inline-flex;align-items:center;gap:.3rem;padding:.45rem 1rem;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;transition:transform .15s,box-shadow .15s}
+.share-trigger:hover{transform:translateY(-1px);box-shadow:0 3px 10px rgba(102,126,234,.3)}
+.share-dd{display:none;position:absolute;top:50%;right:calc(100% + 8px);transform:translateY(-50%);background:var(--card-background,#fff);border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,.12);padding:.4rem;min-width:150px;z-index:100}
+.share-dd.show{display:block;animation:sdFade .12s ease}
+@keyframes sdFade{from{opacity:0;transform:translateY(-50%) translateX(4px)}to{opacity:1;transform:translateY(-50%) translateX(0)}}
+.share-dd a,.share-dd button{display:flex;align-items:center;gap:.4rem;width:100%;padding:.45rem .7rem;border:none;background:none;border-radius:5px;font-size:.85rem;color:var(--card-text-color-main,#333);text-decoration:none;cursor:pointer;transition:background .1s;white-space:nowrap}
+.share-dd a:hover,.share-dd button:hover{background:rgba(102,126,234,.08)}
 /* Comment section */
-.comment-section{padding:0}
-.comment-title{font-size:1.1rem;font-weight:700;color:var(--card-text-color-main);margin-bottom:1rem}
-.comment-textarea{width:100%;padding:.8rem 1rem;border:1.5px solid var(--card-separator-color,#e0e0e0);border-radius:10px;font-size:.95rem;font-family:inherit;resize:vertical;min-height:120px;outline:none;transition:border-color .2s;background:var(--body-background,#fff);color:var(--card-text-color-main)}
-.comment-textarea:focus{border-color:#667eea;box-shadow:0 0 0 3px rgba(102,126,234,.1)}
-.comment-form-footer{display:flex;justify-content:space-between;align-items:center;margin-top:.6rem}
-.comment-char-count{font-size:.8rem;color:var(--card-text-color-tertiary,#999)}
-.comment-submit{padding:.5rem 1.5rem;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:10px;font-size:.9rem;font-weight:600;cursor:pointer;transition:transform .15s,box-shadow .15s}
-.comment-submit:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(102,126,234,.3)}
-.comment-submit:disabled{opacity:.5;cursor:not-allowed;transform:none}
-.comment-user-info{display:flex;align-items:center;gap:.6rem;margin-bottom:.8rem;font-size:.9rem;color:var(--card-text-color-secondary)}
-.comment-login-prompt{text-align:center;padding:2rem;color:var(--card-text-color-secondary,#888)}
-.comment-login-prompt p{margin-bottom:1rem;font-size:.95rem}
-.comment-login-btn{display:inline-block;padding:.6rem 2rem;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff!important;border-radius:10px;text-decoration:none;font-size:.9rem;font-weight:600;transition:transform .15s}
-.comment-login-btn:hover{transform:translateY(-1px)}
-.comment-list{margin-top:1.2rem}
-.comment-empty{text-align:center;padding:2rem;color:var(--card-text-color-tertiary,#aaa);font-size:.95rem}
-.comment-loading{text-align:center;padding:1.5rem;color:var(--card-text-color-tertiary,#aaa);font-size:.9rem}
-.comment-item{padding:1rem 0;border-bottom:1px solid var(--card-separator-color,#f0f0f0)}
-.comment-item:last-child{border-bottom:none}
-.comment-reply{margin-left:2.5rem;padding-left:1rem;border-left:2px solid var(--card-separator-color,#e8e8e8)}
-.comment-header{display:flex;align-items:center;gap:.6rem;margin-bottom:.4rem}
-.comment-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;flex-shrink:0}
-.comment-username{font-weight:600;font-size:.9rem;color:var(--card-text-color-main)}
-.comment-time{font-size:.78rem;color:var(--card-text-color-tertiary,#aaa);margin-left:auto}
-.comment-body{font-size:.95rem;line-height:1.7;color:var(--card-text-color-main);white-space:pre-wrap;word-break:break-word;padding-left:2.5rem;margin-top:.2rem}
-.comment-actions{padding-left:2.5rem;margin-top:.4rem}
-.comment-reply-btn,.comment-delete{background:none;border:none;font-size:.78rem;cursor:pointer;padding:.2rem .5rem;border-radius:4px;transition:all .15s}
-.comment-reply-btn{color:var(--card-text-color-tertiary,#999)}
-.comment-reply-btn:hover{color:#667eea;background:rgba(102,126,234,.08)}
-.comment-delete{color:#ef4444}
-.comment-delete:hover{background:rgba(239,68,68,.08)}
-.reply-indicator{font-size:.85rem;color:var(--card-text-color-secondary);margin-bottom:.5rem;padding:.35rem .7rem;background:rgba(102,126,234,.06);border-radius:6px;display:inline-flex;align-items:center;gap:.4rem}
-.reply-cancel{background:none;border:none;cursor:pointer;font-size:.85rem;color:var(--card-text-color-tertiary);padding:0 .2rem}
-.reply-cancel:hover{color:#ef4444}
-.comment-alert{padding:.6rem .9rem;border-radius:8px;font-size:.85rem;margin-top:.6rem}
-.comment-alert-error{background:#fef2f2;color:#dc2626;border:1px solid #fecaca}
+.cmt-section{padding:1.2rem;background:var(--card-background);border-radius:var(--card-border-radius,10px);box-shadow:var(--shadow-l1)}
+.cmt-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.cmt-title{font-size:1.05rem;font-weight:700;color:var(--card-text-color-main);margin:0}
+.cmt-count{font-size:.8rem;color:var(--card-text-color-tertiary,#aaa);background:var(--body-background,#f5f5f5);padding:.15rem .5rem;border-radius:10px}
+.cmt-textarea{width:100%;padding:.8rem 1rem;border:1.5px solid var(--card-separator-color,#e0e0e0);border-radius:10px;font-size:.95rem;font-family:inherit;resize:vertical;min-height:100px;outline:none;transition:border-color .2s;background:var(--body-background,#fff);color:var(--card-text-color-main);box-sizing:border-box}
+.cmt-textarea:focus{border-color:#667eea;box-shadow:0 0 0 3px rgba(102,126,234,.1)}
+.cmt-form-ft{display:flex;justify-content:space-between;align-items:center;margin-top:.5rem}
+.cmt-char{font-size:.78rem;color:var(--card-text-color-tertiary,#999)}
+.cmt-submit{padding:.45rem 1.3rem;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;transition:transform .15s}
+.cmt-submit:hover{transform:translateY(-1px)}
+.cmt-submit:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.cmt-user{display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem;font-size:.85rem;color:var(--card-text-color-secondary)}
+.cmt-login{text-align:center;padding:1.5rem;color:var(--card-text-color-secondary,#888)}
+.cmt-login p{margin-bottom:.8rem;font-size:.9rem}
+.cmt-login-btn{display:inline-block;padding:.5rem 1.5rem;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff!important;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:600}
+.cmt-list{margin-top:.8rem}
+.cmt-empty{text-align:center;padding:2rem .5rem;color:var(--card-text-color-tertiary,#bbb)}
+.cmt-empty .cmt-empty-icon{font-size:2rem;margin-bottom:.4rem}
+.cmt-empty p{font-size:.9rem;margin:0}
+.cmt-loading{text-align:center;padding:1.5rem;color:var(--card-text-color-tertiary,#aaa);font-size:.85rem}
+.cmt-item{display:flex;gap:.6rem;padding:.8rem 0}
+.cmt-item+.cmt-item{border-top:1px solid var(--card-separator-color,#f0f0f0)}
+.cmt-avatar{width:34px;height:34px;border-radius:50%;color:#fff;display:flex;align-items:center;justify-content:center;font-size:.82rem;font-weight:700;flex-shrink:0}
+.cmt-main{flex:1;min-width:0}
+.cmt-meta{display:flex;align-items:center;gap:.4rem;margin-bottom:.2rem}
+.cmt-name{font-weight:600;font-size:.85rem;color:var(--card-text-color-main)}
+.cmt-time{font-size:.73rem;color:var(--card-text-color-tertiary,#aaa);margin-left:auto}
+.cmt-bubble{background:var(--body-background,#f5f5f5);padding:.6rem .9rem;border-radius:0 10px 10px 10px;font-size:.9rem;line-height:1.6;color:var(--card-text-color-main);white-space:pre-wrap;word-break:break-word;margin-bottom:.3rem}
+.cmt-acts{display:flex;align-items:center;gap:.1rem}
+.cmt-act{background:none;border:none;font-size:.75rem;cursor:pointer;padding:.15rem .4rem;border-radius:4px;transition:all .12s;color:var(--card-text-color-tertiary,#999)}
+.cmt-act:hover{color:#667eea;background:rgba(102,126,234,.06)}
+.cmt-act.liked{color:#e74c3c}
+.cmt-replies{margin-left:2.5rem;padding-left:.8rem;border-left:2px solid var(--card-separator-color,#e8e8e8)}
+.cmt-replies .cmt-item{padding:.5rem 0}
+.cmt-replies .cmt-avatar{width:26px;height:26px;font-size:.7rem}
+.cmt-replies .cmt-bubble{font-size:.85rem;padding:.45rem .7rem}
+.cmt-fold-btn{background:none;border:1px dashed var(--card-separator-color,#ddd);padding:.5rem;border-radius:8px;width:100%;font-size:.82rem;color:var(--card-text-color-tertiary,#999);cursor:pointer;margin-top:.5rem;transition:all .15s}
+.cmt-fold-btn:hover{border-color:#667eea;color:#667eea}
+.reply-ind{font-size:.82rem;color:var(--card-text-color-secondary);margin-bottom:.4rem;padding:.3rem .6rem;background:rgba(102,126,234,.06);border-radius:6px;display:inline-flex;align-items:center;gap:.3rem}
+.reply-ind button{background:none;border:none;cursor:pointer;font-size:.8rem;color:var(--card-text-color-tertiary);padding:0 .2rem}
+.reply-ind button:hover{color:#ef4444}
+.cmt-alert{padding:.5rem .8rem;border-radius:6px;font-size:.82rem;margin-top:.5rem}
+.cmt-alert-error{background:#fef2f2;color:#dc2626;border:1px solid #fecaca}
 </style>
-<!-- Hidden share template - JS will inject into article -->
+<!-- Share template -->
 <template id="shareTpl">
-  <div class="share-cta">
+  <div class="share-end">
     <p>如果你喜欢这篇文章，请分享给更多人 ❤️</p>
-    <button class="share-trigger" onclick="toggleShare()">
-      ↗ 分享文章
-      <div class="share-dropdown" id="shareDropdown">
-        <a id="shareTwitter" target="_blank" rel="noopener"><span class="sd-icon">𝕏</span>Twitter / X</a>
-        <a id="shareWeibo" target="_blank" rel="noopener"><span class="sd-icon" style="color:#e6162d">W</span>微博</a>
-        <a id="shareQQ" target="_blank" rel="noopener"><span class="sd-icon" style="color:#12b7f5">Q</span>QQ</a>
-        <button id="shareCopyBtn"><span class="sd-icon">🔗</span>复制链接</button>
+    <div class="share-wrap">
+      <button class="share-trigger" onclick="toggleShare()">↗ 分享</button>
+      <div class="share-dd" id="shareDD">
+        <a id="sTwitter" target="_blank" rel="noopener">𝕏 Twitter</a>
+        <a id="sWeibo" target="_blank" rel="noopener">🔴 微博</a>
+        <a id="sQQ" target="_blank" rel="noopener">🔵 QQ</a>
+        <button id="sCopy">🔗 复制链接</button>
       </div>
-    </button>
+    </div>
   </div>
 </template>
 
 <section id="comments" class="article-comments">
-  <div class="comment-section">
-    <h3 class="comment-title">💬 评论</h3>
-
-    <div id="commentForm" style="display:none">
-      <div class="comment-user-info" id="commentUserInfo"></div>
-      <textarea id="commentInput" class="comment-textarea" placeholder="写下你的评论..." maxlength="1000" rows="4"></textarea>
-      <div class="comment-form-footer">
-        <span class="comment-char-count"><span id="charCount">0</span>/1000</span>
-        <button class="comment-submit" id="commentSubmit" onclick="submitComment()">发送</button>
+  <div class="cmt-section">
+    <div class="cmt-header">
+      <h3 class="cmt-title">💬 评论</h3>
+      <span class="cmt-count" id="cmtCount"></span>
+    </div>
+    <div id="cmtForm" style="display:none">
+      <div class="cmt-user" id="cmtUser"></div>
+      <textarea id="cmtInput" class="cmt-textarea" placeholder="写下你的评论..." maxlength="1000" rows="3"></textarea>
+      <div class="cmt-form-ft">
+        <span class="cmt-char"><span id="cmtChar">0</span>/1000</span>
+        <button class="cmt-submit" id="cmtSubmit">发送</button>
       </div>
-      <div id="commentAlert" class="comment-alert" style="display:none"></div>
+      <div id="cmtAlert" class="cmt-alert" style="display:none"></div>
     </div>
-
-    <div id="loginPrompt" style="display:none" class="comment-login-prompt">
+    <div id="cmtLogin" style="display:none" class="cmt-login">
       <p>登录后即可评论</p>
-      <a id="loginLink" class="comment-login-btn">登录 / 注册</a>
+      <a id="cmtLoginLink" class="cmt-login-btn">登录 / 注册</a>
     </div>
-
-    <div id="commentList" class="comment-list">
-      <div class="comment-loading">加载中...</div>
-    </div>
+    <div id="cmtList" class="cmt-list"><div class="cmt-loading">加载中...</div></div>
   </div>
 </section>
 
 <script>
-(function() {
-  var API = 'https://auth.liliwiki.com';
-  var pageUrl = window.location.pathname;
-  var currentUser = null;
-  var isAdmin = false;
-  var replyTo = null;
+(function(){
+  var API='https://auth.liliwiki.com',pageUrl=window.location.pathname,curUser=null,isAdmin=false,replyTo=null,allComments=[],folded=true;
+  var COLORS=['#667eea','#764ba2','#e74c3c','#2ecc71','#f39c12','#1abc9c','#e91e63','#9b59b6','#3498db','#e67e22'];
+  function hashColor(s){var h=0;for(var i=0;i<s.length;i++){h=s.charCodeAt(i)+((h<<5)-h);}return COLORS[Math.abs(h)%COLORS.length];}
 
-  // Inject share CTA into article content
-  var tpl = document.getElementById('shareTpl');
-  var articleContent = document.querySelector('.article-content') || document.querySelector('article.main-article .article-content') || document.querySelector('article');
-  if (tpl && articleContent) {
-    var clone = tpl.content.cloneNode(true);
-    articleContent.appendChild(clone);
+  // Inject share into article
+  var tpl=document.getElementById('shareTpl');
+  var ac=document.querySelector('.article-content')||document.querySelector('article');
+  if(tpl&&ac){ac.appendChild(tpl.content.cloneNode(true));}
+  var et=encodeURIComponent(document.title),eu=encodeURIComponent(window.location.href);
+  var sT=document.getElementById('sTwitter'),sW=document.getElementById('sWeibo'),sQ=document.getElementById('sQQ');
+  if(sT)sT.href='https://twitter.com/intent/tweet?text='+et+'&url='+eu;
+  if(sW)sW.href='https://service.weibo.com/share/share.php?title='+et+'&url='+eu;
+  if(sQ)sQ.href='https://connect.qq.com/widget/shareqq/index.html?title='+et+'&url='+eu;
+  window.toggleShare=function(){var d=document.getElementById('shareDD');if(d)d.classList.toggle('show');};
+  document.addEventListener('click',function(e){if(!e.target.closest('.share-wrap')){var d=document.getElementById('shareDD');if(d)d.classList.remove('show');}});
+  var cb=document.getElementById('sCopy');
+  if(cb)cb.onclick=function(e){e.stopPropagation();var b=this;navigator.clipboard.writeText(window.location.href).then(function(){b.textContent='\u2713 \u5df2\u590d\u5236';setTimeout(function(){b.textContent='\uD83D\uDD17 \u590D\u5236\u94FE\u63A5';},2000);});};
+
+  // Auth
+  fetch(API+'/api/me',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var u=d.user||d;
+    if(u&&u.email){curUser=u;isAdmin=u.role==='admin'||u.role==='sub_admin';
+      document.getElementById('cmtForm').style.display='block';
+      document.getElementById('cmtLogin').style.display='none';
+      document.getElementById('cmtUser').innerHTML='<span class="cmt-avatar" style="background:'+hashColor(u.username||u.email)+'">'+esc(u.username||u.email)[0].toUpperCase()+'</span><span class="cmt-name">'+esc(u.username||u.email)+'</span>';
+    }else{sLogin();}
+  }).catch(function(){sLogin();});
+  function sLogin(){document.getElementById('cmtForm').style.display='none';document.getElementById('cmtLogin').style.display='block';document.getElementById('cmtLoginLink').href=API+'/login?redirect='+encodeURIComponent(window.location.href);}
+
+  loadCmts();
+  document.getElementById('cmtInput').addEventListener('input',function(){document.getElementById('cmtChar').textContent=this.value.length;});
+  document.getElementById('cmtSubmit').addEventListener('click',submitCmt);
+
+  function loadCmts(){
+    fetch(API+'/api/comments?url='+encodeURIComponent(pageUrl),{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+      allComments=d.comments||[];
+      var cnt=document.getElementById('cmtCount');
+      cnt.textContent=allComments.length>0?allComments.length+' \u6761':'';
+      renderCmts();
+    }).catch(function(){document.getElementById('cmtList').innerHTML='<div class="cmt-empty"><p>\u8bc4\u8bba\u52a0\u8f7d\u5931\u8d25</p></div>';});
   }
 
-  // Init share buttons (after injection)
-  var et = encodeURIComponent(document.title);
-  var eu = encodeURIComponent(window.location.href);
-  var stw = document.getElementById('shareTwitter');
-  var swb = document.getElementById('shareWeibo');
-  var sqq = document.getElementById('shareQQ');
-  if (stw) stw.href = 'https://twitter.com/intent/tweet?text=' + et + '&url=' + eu;
-  if (swb) swb.href = 'https://service.weibo.com/share/share.php?title=' + et + '&url=' + eu;
-  if (sqq) sqq.href = 'https://connect.qq.com/widget/shareqq/index.html?title=' + et + '&url=' + eu;
-
-  window.toggleShare = function() {
-    var dd = document.getElementById('shareDropdown');
-    if (dd) dd.classList.toggle('show');
-  };
-  document.addEventListener('click', function(e) {
-    if (!e.target.closest('.share-trigger')) {
-      var dd = document.getElementById('shareDropdown');
-      if (dd) dd.classList.remove('show');
-    }
-  });
-  var copyBtn = document.getElementById('shareCopyBtn');
-  if (copyBtn) copyBtn.addEventListener('click', function(e) {
-    e.stopPropagation();
-    var btn = this;
-    navigator.clipboard.writeText(window.location.href).then(function() {
-      btn.innerHTML = '<span class="sd-icon">\u2713</span>\u5DF2\u590D\u5236';
-      setTimeout(function() { btn.innerHTML = '<span class="sd-icon">\uD83D\uDD17</span>\u590D\u5236\u94FE\u63A5'; }, 2000);
-    });
-  });
-
-  // Check login
-  fetch(API + '/api/me', { credentials: 'include' })
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-      var u = data.user || data;
-      if (u && u.email) {
-        currentUser = u;
-        isAdmin = u.role === 'admin' || u.role === 'sub_admin';
-        document.getElementById('commentForm').style.display = 'block';
-        document.getElementById('loginPrompt').style.display = 'none';
-        document.getElementById('commentUserInfo').innerHTML =
-          '<span class="comment-avatar">' + esc(u.username || u.email)[0].toUpperCase() + '</span>' +
-          '<span class="comment-username">' + esc(u.username || u.email) + '</span>';
-      } else { showLogin(); }
-    })
-    .catch(function() { showLogin(); });
-
-  function showLogin() {
-    document.getElementById('commentForm').style.display = 'none';
-    document.getElementById('loginPrompt').style.display = 'block';
-    document.getElementById('loginLink').href = API + '/login?redirect=' + encodeURIComponent(window.location.href);
+  function renderCmts(){
+    var list=document.getElementById('cmtList');
+    if(allComments.length===0){list.innerHTML='<div class="cmt-empty"><div class="cmt-empty-icon">\uD83D\uDCAC</div><p>\u6682\u65E0\u8BC4\u8BBA\uFF0C\u6765\u8BF4\u4E24\u53E5\u5427</p></div>';return;}
+    var roots=[],children={};
+    allComments.forEach(function(c){if(c.parent_id){if(!children[c.parent_id])children[c.parent_id]=[];children[c.parent_id].push(c);}else{roots.push(c);}});
+    // Sort roots by likes desc
+    var sorted=roots.slice().sort(function(a,b){return(b.likes||0)-(a.likes||0);});
+    var show=folded&&sorted.length>3?sorted.slice(0,3):sorted;
+    var html='';
+    show.forEach(function(c){html+=renderCmt(c,children);});
+    if(folded&&sorted.length>3){html+='<button class="cmt-fold-btn" onclick="expandCmts()">\u5C55\u5F00\u5168\u90E8 '+sorted.length+' \u6761\u8BC4\u8BBA</button>';}
+    else if(!folded&&sorted.length>3){html+='<button class="cmt-fold-btn" onclick="foldCmts()">\u6536\u8D77\u8BC4\u8BBA</button>';}
+    list.innerHTML=html;
   }
 
-  loadComments();
+  window.expandCmts=function(){folded=false;renderCmts();};
+  window.foldCmts=function(){folded=true;renderCmts();};
 
-  document.getElementById('commentInput').addEventListener('input', function() {
-    document.getElementById('charCount').textContent = this.value.length;
-  });
-
-  function loadComments() {
-    fetch(API + '/api/comments?url=' + encodeURIComponent(pageUrl), { credentials: 'include' })
-      .then(function(r) { return r.json(); })
-      .then(function(data) {
-        var list = document.getElementById('commentList');
-        var comments = data.comments || [];
-        if (comments.length === 0) { list.innerHTML = '<div class="comment-empty">\u6682\u65E0\u8BC4\u8BBA\uFF0C\u6765\u8BF4\u4E24\u53E5\u5427</div>'; return; }
-        var roots = [], children = {};
-        comments.forEach(function(c) {
-          if (c.parent_id) { if (!children[c.parent_id]) children[c.parent_id] = []; children[c.parent_id].push(c); }
-          else { roots.push(c); }
-        });
-        var html = '';
-        roots.forEach(function(c) { html += renderComment(c, children, 0); });
-        list.innerHTML = html;
-      })
-      .catch(function() { document.getElementById('commentList').innerHTML = '<div class="comment-empty">\u8BC4\u8BBA\u52A0\u8F7D\u5931\u8D25</div>'; });
-  }
-
-  function renderComment(c, ch, depth) {
-    var time = new Date(c.created_at);
-    var ts = time.getFullYear()+'-'+pad(time.getMonth()+1)+'-'+pad(time.getDate())+' '+pad(time.getHours())+':'+pad(time.getMinutes());
-    var initial = (c.user_name || '?')[0].toUpperCase();
-    var dc = depth > 0 ? ' comment-reply' : '';
-    var del = isAdmin ? '<button class="comment-delete" onclick="deleteComment(\''+c.id+'\')">删除</button>' : '';
-    var rpl = currentUser ? '<button class="comment-reply-btn" onclick="setReply(\''+c.id+'\',\''+esc(c.user_name)+'\')">回复</button>' : '';
-    var h = '<div class="comment-item'+dc+'" id="comment-'+c.id+'">' +
-      '<div class="comment-header"><span class="comment-avatar">'+esc(initial)+'</span><span class="comment-username">'+esc(c.user_name)+'</span><span class="comment-time">'+ts+'</span></div>' +
-      '<div class="comment-body">'+esc(c.content)+'</div>' +
-      '<div class="comment-actions">'+rpl+del+'</div></div>';
-    if (ch[c.id]) { ch[c.id].forEach(function(child) { h += renderComment(child, ch, depth+1); }); }
+  function renderCmt(c,ch){
+    var t=new Date(c.created_at),ts=t.getFullYear()+'-'+pad(t.getMonth()+1)+'-'+pad(t.getDate())+' '+pad(t.getHours())+':'+pad(t.getMinutes());
+    var ini=(c.user_name||'?')[0].toUpperCase(),col=hashColor(c.user_name||'?');
+    var likes=c.likes||0;
+    var likedBy=[];try{likedBy=JSON.parse(c.liked_by||'[]');}catch(e){}
+    var isLiked=curUser&&likedBy.indexOf(curUser.email)!==-1;
+    var likeBtn='<button class="cmt-act'+(isLiked?' liked':'')+'" onclick="likeCmt(\''+c.id+'\')">'+(isLiked?'\u2764':'\u2661')+' '+(likes>0?likes:'')+'</button>';
+    var rplBtn=curUser?'<button class="cmt-act" onclick="setReply(\''+c.id+'\',\''+esc(c.user_name)+'\')">↩ \u56de\u590d</button>':'';
+    var delBtn=isAdmin?'<button class="cmt-act" style="color:#ef4444" onclick="delCmt(\''+c.id+'\')">\u5220\u9664</button>':'';
+    var h='<div class="cmt-item" id="c-'+c.id+'"><span class="cmt-avatar" style="background:'+col+'">'+esc(ini)+'</span><div class="cmt-main"><div class="cmt-meta"><span class="cmt-name">'+esc(c.user_name)+'</span><span class="cmt-time">'+ts+'</span></div><div class="cmt-bubble">'+esc(c.content)+'</div><div class="cmt-acts">'+likeBtn+rplBtn+delBtn+'</div>';
+    if(ch[c.id]&&ch[c.id].length>0){h+='<div class="cmt-replies">';ch[c.id].forEach(function(r){h+=renderCmt(r,ch);});h+='</div>';}
+    h+='</div></div>';
     return h;
   }
 
-  function pad(n) { return n<10?'0'+n:''+n; }
-  function esc(s) { return s?String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'):''; }
+  function pad(n){return n<10?'0'+n:''+n;}
+  function esc(s){return s?String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'):'';} 
 
-  // POST with text/plain to avoid CORS preflight (WAF blocks OPTIONS)
-  function postAPI(path, data) {
-    return fetch(API + path, {
-      method: 'POST',
-      credentials: 'include',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify(data)
-    }).then(function(r) { return r.json(); });
+  function postAPI(p,d){return fetch(API+p,{method:'POST',credentials:'include',headers:{'Content-Type':'text/plain'},body:JSON.stringify(d)}).then(function(r){return r.json();});}
+
+  function submitCmt(){
+    var input=document.getElementById('cmtInput'),content=input.value.trim();if(!content)return;
+    var btn=document.getElementById('cmtSubmit');btn.disabled=true;btn.textContent='\u53d1\u9001\u4e2d...';
+    postAPI('/api/comments',{url:pageUrl,content:content,parent_id:replyTo||''}).then(function(d){
+      btn.disabled=false;btn.textContent='\u53d1\u9001';
+      if(d.error){showAlert(d.error);}else{input.value='';document.getElementById('cmtChar').textContent='0';cancelReply();folded=false;loadCmts();}
+    }).catch(function(){btn.disabled=false;btn.textContent='\u53d1\u9001';showAlert('\u53d1\u9001\u5931\u8d25');});
   }
 
-  window.submitComment = function() {
-    var input = document.getElementById('commentInput');
-    var content = input.value.trim();
-    if (!content) return;
-    var btn = document.getElementById('commentSubmit');
-    btn.disabled = true; btn.textContent = '\u53D1\u9001\u4E2D...';
-    postAPI('/api/comments', { url: pageUrl, content: content, parent_id: replyTo || '' })
-    .then(function(data) {
-      btn.disabled = false; btn.textContent = '\u53D1\u9001';
-      if (data.error) { showAlert(data.error, 'error'); }
-      else { input.value = ''; document.getElementById('charCount').textContent = '0'; cancelReply(); loadComments(); }
-    })
-    .catch(function() { btn.disabled = false; btn.textContent = '\u53D1\u9001'; showAlert('\u53D1\u9001\u5931\u8D25\uFF0C\u8BF7\u91CD\u8BD5', 'error'); });
-  };
+  window.delCmt=function(id){if(!confirm('\u786e\u5b9a\u5220\u9664\uff1f'))return;postAPI('/api/comments/delete',{id:id}).then(function(d){if(d.ok)loadCmts();else showAlert(d.error||'\u5220\u9664\u5931\u8d25');});};
+  window.likeCmt=function(id){postAPI('/api/comments/like',{id:id}).then(function(d){if(d.ok)loadCmts();else if(d.error)showAlert(d.error);});};
 
-  window.deleteComment = function(id) {
-    if (!confirm('\u786E\u5B9A\u5220\u9664\u8FD9\u6761\u8BC4\u8BBA\uFF1F')) return;
-    postAPI('/api/comments/delete', { id: id })
-    .then(function(data) { if (data.ok) loadComments(); else showAlert(data.error||'\u5220\u9664\u5931\u8D25','error'); });
+  window.setReply=function(id,name){
+    replyTo=id;var input=document.getElementById('cmtInput');input.placeholder='\u56de\u590d '+name+'...';input.focus();
+    var ex=document.getElementById('replyInd');if(ex)ex.remove();
+    var ind=document.createElement('div');ind.id='replyInd';ind.className='reply-ind';
+    ind.innerHTML='\u56de\u590d <b>'+esc(name)+'</b> <button onclick="cancelReply()">\u2715</button>';
+    input.parentNode.insertBefore(ind,input);
   };
-
-  window.setReply = function(id, name) {
-    replyTo = id;
-    var input = document.getElementById('commentInput');
-    input.placeholder = '\u56DE\u590D ' + name + '...';
-    input.focus();
-    var ex = document.getElementById('replyIndicator');
-    if (ex) ex.remove();
-    var ind = document.createElement('div');
-    ind.id = 'replyIndicator'; ind.className = 'reply-indicator';
-    ind.innerHTML = '\u56DE\u590D <b>' + esc(name) + '</b> <button onclick="cancelReply()" class="reply-cancel">\u2715</button>';
-    input.parentNode.insertBefore(ind, input);
-  };
-
-  window.cancelReply = function() {
-    replyTo = null;
-    document.getElementById('commentInput').placeholder = '\u5199\u4E0B\u4F60\u7684\u8BC4\u8BBA...';
-    var ex = document.getElementById('replyIndicator');
-    if (ex) ex.remove();
-  };
-
-  function showAlert(msg, type) {
-    var el = document.getElementById('commentAlert');
-    el.textContent = msg;
-    el.className = 'comment-alert comment-alert-' + type;
-    el.style.display = 'block';
-    setTimeout(function() { el.style.display = 'none'; }, 3000);
-  }
+  window.cancelReply=function(){replyTo=null;document.getElementById('cmtInput').placeholder='\u5199\u4e0b\u4f60\u7684\u8bc4\u8bba...';var ex=document.getElementById('replyInd');if(ex)ex.remove();};
+  function showAlert(msg){var el=document.getElementById('cmtAlert');el.textContent=msg;el.className='cmt-alert cmt-alert-error';el.style.display='block';setTimeout(function(){el.style.display='none';},3000);}
 })();
 </script>
 {{ end }}
