@@ -1,0 +1,44 @@
+<style>
+.article-share {
+  margin: 2rem 0;
+  padding: 1.2rem;
+  background: var(--card-background);
+  border-radius: var(--card-border-radius, 10px);
+  box-shadow: var(--shadow-l1);
+}
+.share-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--card-text-color-main);
+  margin-bottom: 0.6rem;
+  display: block;
+}
+.share-buttons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.share-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.4rem 0.9rem;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  text-decoration: none;
+  border: 1px solid var(--card-separator-color, #eee);
+  color: var(--card-text-color-secondary, #666);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.share-btn:hover {
+  border-color: var(--accent-color, #667eea);
+  color: var(--accent-color, #667eea);
+  background: var(--accent-color-bg, rgba(102,126,234,0.08));
+}
+.share-twitter:hover { border-color: #1da1f2; color: #1da1f2; }
+.share-weibo:hover { border-color: #e6162d; color: #e6162d; }
+.share-qq:hover { border-color: #12b7f5; color: #12b7f5; }
+</style>
