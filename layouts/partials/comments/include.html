@@ -1,28 +1,25 @@
 {{ if .Site.Params.comments.enabled }}
 <style>
-/* === Share (injected into .article-content) === */
-.share-end{display:flex;align-items:center;justify-content:space-between;gap:1.5rem;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--card-separator-color,#eee)}
-.share-end p{font-size:1.4rem;color:var(--card-text-color-main);margin:0;flex:1;line-height:1.6}
-.share-wrap{position:relative;flex-shrink:0}
-.share-trigger{display:inline-flex;align-items:center;gap:.6rem;padding:.7rem 1.6rem;background:var(--accent-color,#667eea);color:var(--accent-color-text,#fff);border:none;border-radius:8px;font-size:1.4rem;font-weight:600;cursor:pointer;transition:opacity .15s}
-.share-trigger:hover{opacity:.85}
-.share-dd{display:none;position:absolute;top:50%;right:calc(100% + 10px);transform:translateY(-50%);background:var(--card-background,#fff);border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.12);padding:.6rem;min-width:160px;z-index:100}
-.share-dd.show{display:block;animation:sdIn .12s ease}
-@keyframes sdIn{from{opacity:0;transform:translateY(-50%) translateX(4px)}to{opacity:1;transform:translateY(-50%) translateX(0)}}
+/* === Share === */
+.share-thanks{text-align:center;font-size:1.4rem;color:var(--card-text-color-main);margin:4rem 0 1rem;padding-top:2rem;border-top:1px solid var(--card-separator-color,#eee);line-height:1.6}
+.share-wrap{position:relative;flex-shrink:0;margin-left:auto}
+.share-trigger{display:inline-flex;align-items:center;gap:.6rem;padding:.5rem 1.2rem;background:var(--card-background,#fff);color:var(--card-text-color-main);border:1px solid var(--card-separator-color,#eee);border-radius:6px;font-size:1.3rem;font-weight:600;cursor:pointer;transition:all .15s}
+.share-trigger:hover{border-color:var(--accent-color,#667eea);color:var(--accent-color,#667eea)}
+.share-dd{display:none;position:absolute;bottom:calc(100% + 8px);right:0;background:var(--card-background,#fff);border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.15);padding:.6rem;min-width:140px;z-index:100;border:1px solid var(--card-separator-color,#eee)}
+.share-dd.show{display:block;animation:sdUp .15s ease}
+@keyframes sdUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 .share-dd a,.share-dd button{display:flex;align-items:center;gap:.8rem;width:100%;padding:.7rem 1rem;border:none;background:none;border-radius:6px;font-size:1.4rem;color:var(--card-text-color-main,#333);text-decoration:none;cursor:pointer;transition:background .1s;white-space:nowrap}
 .share-dd a:hover,.share-dd button:hover{background:var(--body-background,#f5f5f5)}
 
-/* === Comment Section (card matching article style) === */
+/* === Comment Section === */
 .cmt-section{padding:var(--card-padding);background:var(--card-background);border-radius:var(--card-border-radius,10px);box-shadow:var(--shadow-l1)}
 .cmt-head{display:flex;align-items:center;gap:1.2rem;margin-bottom:2rem}
 .cmt-title{font-size:1.8rem;font-weight:700;color:var(--card-text-color-main);margin:0}
 .cmt-count-badge{font-size:1.3rem;color:var(--card-text-color-tertiary);background:var(--body-background,#f5f5f5);padding:.2rem 1rem;border-radius:12px}
-/* Write comment button */
 .cmt-write-btn{display:inline-flex;align-items:center;gap:.8rem;padding:.8rem 2rem;background:var(--accent-color,#667eea);color:var(--accent-color-text,#fff);border:none;border-radius:8px;font-size:1.4rem;font-weight:600;cursor:pointer;transition:opacity .15s;margin-bottom:.5rem}
 .cmt-write-btn:hover{opacity:.85}
 .cmt-login-link{display:inline-flex;align-items:center;gap:.8rem;padding:.8rem 2rem;background:var(--accent-color,#667eea);color:var(--accent-color-text,#fff)!important;border:none;border-radius:8px;font-size:1.4rem;font-weight:600;cursor:pointer;text-decoration:none;transition:opacity .15s}
 .cmt-login-link:hover{opacity:.85}
-/* Comment form (hidden by default) */
 .cmt-form{display:none;margin-top:1.5rem;padding:2rem;background:var(--body-background,#f9f9f9);border-radius:10px}
 .cmt-form.show{display:block;animation:cmtSlide .2s ease}
 @keyframes cmtSlide{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
@@ -39,13 +36,11 @@
 .reply-tag{font-size:1.3rem;color:var(--card-text-color-secondary);margin-bottom:1rem;padding:.4rem 1rem;background:rgba(102,126,234,.06);border-radius:6px;display:inline-flex;align-items:center;gap:.6rem}
 .reply-tag button{background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--card-text-color-tertiary);padding:0 .3rem}
 .reply-tag button:hover{color:#ef4444}
-/* Comment list */
 .cmt-list{margin-top:2rem}
 .cmt-empty{text-align:center;padding:4rem 1rem;color:var(--card-text-color-tertiary,#bbb)}
 .cmt-empty-icon{font-size:3rem;margin-bottom:1rem}
 .cmt-empty p{font-size:1.4rem;margin:0}
 .cmt-loading{text-align:center;padding:3rem;color:var(--card-text-color-tertiary);font-size:1.4rem}
-/* Single comment */
 .c-item{display:flex;gap:1.2rem;padding:1.6rem 0}
 .c-item+.c-item{border-top:1px solid var(--card-separator-color,#f0f0f0)}
 .c-avatar{width:40px;height:40px;border-radius:50%;color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:700;flex-shrink:0}
@@ -59,32 +54,14 @@
 .c-btn:hover{color:var(--accent-color,#667eea);background:rgba(102,126,234,.05)}
 .c-btn.liked{color:#e74c3c}
 .c-btn.del:hover{color:#ef4444}
-/* Nested replies - subtle gray line */
 .c-replies{margin-left:52px;position:relative}
 .c-replies::before{content:'';position:absolute;left:-26px;top:0;bottom:0;width:1.5px;background:var(--card-separator-color,#e5e5e5)}
 .c-replies .c-item{padding:1.2rem 0}
 .c-replies .c-avatar{width:32px;height:32px;font-size:1.3rem}
 .c-replies .c-text{font-size:1.3rem}
-/* Fold */
 .cmt-more{background:none;border:1px dashed var(--card-separator-color,#ddd);padding:1rem;border-radius:8px;width:100%;font-size:1.3rem;color:var(--card-text-color-tertiary);cursor:pointer;margin-top:1.2rem;transition:all .15s}
 .cmt-more:hover{border-color:var(--accent-color,#667eea);color:var(--accent-color,#667eea)}
 </style>
-
-<!-- Share template (injected into article via JS) -->
-<template id="shareTpl">
-  <div class="share-end">
-    <p>如果你喜欢这篇文章，请分享给更多人 ❤️</p>
-    <div class="share-wrap">
-      <button class="share-trigger" onclick="toggleShare()">↗ 分享</button>
-      <div class="share-dd" id="shareDD">
-        <a id="sTwitter" target="_blank" rel="noopener">𝕏 Twitter</a>
-        <a id="sWeibo" target="_blank" rel="noopener">🔴 微博</a>
-        <a id="sQQ" target="_blank" rel="noopener">🔵 QQ</a>
-        <button id="sCopy">🔗 复制链接</button>
-      </div>
-    </div>
-  </div>
-</template>
 
 <section id="comments" class="article-comments">
   <div class="cmt-section">
@@ -93,13 +70,11 @@
       <span class="cmt-count-badge" id="cmtCount"></span>
     </div>
 
-    <!-- Write button or Login button -->
     <div id="cmtActions">
       <button class="cmt-write-btn" id="cmtWriteBtn" style="display:none" onclick="toggleForm()">✏️ 写评论</button>
       <a class="cmt-login-link" id="cmtLoginLink" style="display:none">🔑 登录后评论</a>
     </div>
 
-    <!-- Form (hidden, shown on click) -->
     <div class="cmt-form" id="cmtForm">
       <div class="cmt-form-user" id="cmtUser"></div>
       <textarea id="cmtInput" class="cmt-textarea" placeholder="写下你的评论..." maxlength="1000" rows="3"></textarea>
@@ -110,7 +85,6 @@
       <div id="cmtAlert" class="cmt-alert" style="display:none"></div>
     </div>
 
-    <!-- Comment list -->
     <div id="cmtList" class="cmt-list"><div class="cmt-loading">加载中...</div></div>
   </div>
 </section>
@@ -122,10 +96,44 @@
   var COLORS=['#667eea','#764ba2','#e74c3c','#2ecc71','#f39c12','#1abc9c','#e91e63','#9b59b6','#3498db','#e67e22'];
   function hc(s){var h=0;for(var i=0;i<s.length;i++){h=s.charCodeAt(i)+((h<<5)-h);}return COLORS[Math.abs(h)%COLORS.length];}
 
-  // === Share: inject into article ===
-  var tpl=document.getElementById('shareTpl');
-  var ac=document.querySelector('.article-content')||document.querySelector('article');
-  if(tpl&&ac) ac.appendChild(tpl.content.cloneNode(true));
+  // === Dynamic Injection ===
+  // 1. Inject thanks text at the end of article content
+  var ac = document.querySelector('.article-content') || document.querySelector('article');
+  if(ac) {
+    var thanks = document.createElement('div');
+    thanks.className = 'share-thanks';
+    thanks.innerHTML = '如果你喜欢这篇文章，请分享给更多人 ❤️';
+    ac.appendChild(thanks);
+  }
+
+  // 2. Inject share button right next to tags in article footer
+  var shareWrap = document.createElement('div');
+  shareWrap.className = 'share-wrap';
+  shareWrap.innerHTML = 
+    '<button class="share-trigger" onclick="toggleShare()">↗ 分享</button>'+
+    '<div class="share-dd" id="shareDD">'+
+      '<a id="sTwitter" target="_blank" rel="noopener">𝕏 Twitter</a>'+
+      '<a id="sWeibo" target="_blank" rel="noopener">🔴 微博</a>'+
+      '<a id="sQQ" target="_blank" rel="noopener">🔵 QQ</a>'+
+      '<button id="sCopy">🔗 复制链接</button>'+
+    '</div>';
+
+  var tagsSec = document.querySelector('.article-footer .article-tags');
+  if(tagsSec) {
+    tagsSec.style.width = '100%';
+    tagsSec.appendChild(shareWrap);
+  } else {
+    var footer = document.querySelector('.article-footer');
+    if(footer) {
+      var sec = document.createElement('section');
+      sec.className = 'article-tags';
+      sec.style.width = '100%';
+      sec.appendChild(shareWrap);
+      footer.insertBefore(sec, footer.firstChild);
+    }
+  }
+
+  // Setup share links
   var et=encodeURIComponent(document.title), eu=encodeURIComponent(window.location.href);
   var sT=document.getElementById('sTwitter'), sW=document.getElementById('sWeibo'), sQ=document.getElementById('sQQ');
   if(sT) sT.href='https://twitter.com/intent/tweet?text='+et+'&url='+eu;
@@ -191,8 +199,15 @@
   window.foldCmts=function(){folded=true;renderList();};
 
   function renderC(c,kids){
-    var d=new Date(c.created_at);
-    var ts=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+' '+pad(d.getHours())+':'+pad(d.getMinutes());
+    // FIX: Convert created_at safely to handle string timestamps preventing NaN bug
+    var d=new Date(Number(c.created_at));
+    var ts='';
+    if(!isNaN(d.getTime())) {
+      ts=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+' '+pad(d.getHours())+':'+pad(d.getMinutes());
+    } else {
+      ts='未知时间';
+    }
+    
     var ini=(c.user_name||'?')[0].toUpperCase(), col=hc(c.user_name||'?');
     var lk=c.likes||0, lb=[];try{lb=JSON.parse(c.liked_by||'[]');}catch(e){}
     var liked=curUser&&lb.indexOf(curUser.email)!==-1;
