@@ -1,0 +1,73 @@
+/*
+ * Global Typography Reset
+ * The default Stack theme font sizes are too large.
+ * This overrides the CSS variables to provide a more standard, smaller typography.
+ */
+
+:root {
+    --article-font-size: 1.4rem;
+    
+    @include respond(md) {
+        --article-font-size: 1.5rem;
+    }
+}
+
+/* Global resets for base body text */
+body {
+    font-size: 1.4rem;
+}
+
+/* Override article component sizes directly as they don't use variables for all headings */
+.article-title {
+    font-size: 1.8rem !important;
+
+    @include respond(md) {
+        font-size: 2.0rem !important;
+    }
+
+    @include respond(xl) {
+        font-size: 2.2rem !important;
+    }
+}
+
+.article-content {
+    h1 { font-size: 1.8rem !important; }
+    h2 { font-size: 1.6rem !important; }
+    h3 { font-size: 1.5rem !important; }
+    h4 { font-size: 1.4rem !important; }
+    h5 { font-size: 1.3rem !important; }
+    h6 { font-size: 1.2rem !important; }
+}
+
+/* Sidebar and meta info text */
+.section-title {
+    font-size: 1.4rem !important;
+}
+
+.article-time,
+.article-translations,
+.article-header-tags {
+    time, a {
+        font-size: 1.2rem !important;
+    }
+}
+
+.article-category a,
+.article-tags a {
+    font-size: 1.2rem !important;
+    padding: 6px 12px !important;
+}
+
+/* Article lists */
+.article-list--compact article .article-title {
+    font-size: 1.5rem !important;
+    
+    @include respond(md) {
+        font-size: 1.6rem !important;
+    }
+}
+
+.article-list--compact article .article-time,
+.article-list--compact article .article-preview {
+    font-size: 1.3rem !important;
+}
