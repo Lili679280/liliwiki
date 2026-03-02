@@ -42,3 +42,41 @@
 .share-weibo:hover { border-color: #e6162d; color: #e6162d; }
 .share-qq:hover { border-color: #12b7f5; color: #12b7f5; }
 </style>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var article = document.querySelector('article.main-article') || document.querySelector('.article-content') || document.querySelector('article');
+  if (!article) return;
+  if (window.location.pathname === '/' || window.location.pathname.indexOf('/page/') === 0) return;
+
+  var title = document.title;
+  var url = window.location.href;
+  var et = encodeURIComponent(title);
+  var eu = encodeURIComponent(url);
+
+  var d = document.createElement('div');
+  d.className = 'article-share';
+  d.innerHTML =
+    '<span class="share-label">\u5206\u4EAB\u672C\u6587</span>' +
+    '<div class="share-buttons">' +
+    '<a href="https://twitter.com/intent/tweet?text=' + et + '&url=' + eu + '" target="_blank" rel="noopener" class="share-btn share-twitter">X</a>' +
+    '<a href="https://service.weibo.com/share/share.php?title=' + et + '&url=' + eu + '" target="_blank" rel="noopener" class="share-btn share-weibo">\u5FAE\u535A</a>' +
+    '<a href="https://connect.qq.com/widget/shareqq/index.html?title=' + et + '&url=' + eu + '" target="_blank" rel="noopener" class="share-btn share-qq">QQ</a>' +
+    '<button class="share-btn share-copy" id="shareCopyBtn">\u590D\u5236\u94FE\u63A5</button>' +
+    '</div>';
+
+  var comments = document.getElementById('comments') || document.querySelector('.article-comments') || document.querySelector('#twikoo');
+  if (comments) {
+    comments.parentNode.insertBefore(d, comments);
+  } else {
+    article.parentNode.insertBefore(d, article.nextSibling);
+  }
+
+  document.getElementById('shareCopyBtn').addEventListener('click', function() {
+    var b = this;
+    navigator.clipboard.writeText(url).then(function() {
+      b.textContent = '\u5DF2\u590D\u5236 \u2713';
+      setTimeout(function() { b.textContent = '\u590D\u5236\u94FE\u63A5'; }, 2000);
+    });
+  });
+});
+</script>
