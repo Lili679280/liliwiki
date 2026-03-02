@@ -1,19 +1,19 @@
 {{ if .Site.Params.comments.enabled }}
 <style>
-/* Share CTA */
-.share-cta{text-align:center;padding:2rem 1rem;margin-bottom:1.5rem}
-.share-cta p{font-size:1rem;color:var(--card-text-color-secondary,#666);margin-bottom:1rem}
-.share-trigger{display:inline-flex;align-items:center;gap:.4rem;padding:.6rem 1.5rem;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:10px;font-size:.95rem;font-weight:600;cursor:pointer;transition:transform .15s,box-shadow .15s;position:relative}
-.share-trigger:hover{transform:translateY(-2px);box-shadow:0 4px 15px rgba(102,126,234,.35)}
+/* Share CTA - injected into article */
+.share-cta{text-align:center;padding:1.5rem 0;margin-top:2rem;border-top:1px solid var(--card-separator-color,#eee)}
+.share-cta p{font-size:.95rem;color:var(--card-text-color-secondary,#666);margin-bottom:.8rem}
+.share-trigger{display:inline-flex;align-items:center;gap:.4rem;padding:.5rem 1.3rem;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;transition:transform .15s,box-shadow .15s;position:relative}
+.share-trigger:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(102,126,234,.3)}
 .share-dropdown{display:none;position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--card-background,#fff);border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,.15);padding:.5rem;min-width:160px;z-index:100}
 .share-dropdown.show{display:block;animation:sdIn .15s ease}
 @keyframes sdIn{from{opacity:0;transform:translateX(-50%) translateY(4px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
-.share-dropdown a,.share-dropdown button{display:flex;align-items:center;gap:.5rem;width:100%;padding:.55rem .8rem;border:none;background:none;border-radius:6px;font-size:.88rem;color:var(--card-text-color-main,#333);text-decoration:none;cursor:pointer;transition:background .1s}
+.share-dropdown a,.share-dropdown button{display:flex;align-items:center;gap:.5rem;width:100%;padding:.5rem .8rem;border:none;background:none;border-radius:6px;font-size:.88rem;color:var(--card-text-color-main,#333);text-decoration:none;cursor:pointer;transition:background .1s}
 .share-dropdown a:hover,.share-dropdown button:hover{background:rgba(102,126,234,.08)}
 .share-dropdown .sd-icon{width:20px;text-align:center;font-weight:700}
 /* Comment section */
-.comment-section{padding:1.5rem 0}
-.comment-title{font-size:1.15rem;font-weight:700;color:var(--card-text-color-main);margin-bottom:1.2rem;padding-bottom:.6rem;border-bottom:2px solid var(--card-separator-color,#eee)}
+.comment-section{padding:0}
+.comment-title{font-size:1.1rem;font-weight:700;color:var(--card-text-color-main);margin-bottom:1rem}
 .comment-textarea{width:100%;padding:.8rem 1rem;border:1.5px solid var(--card-separator-color,#e0e0e0);border-radius:10px;font-size:.95rem;font-family:inherit;resize:vertical;min-height:120px;outline:none;transition:border-color .2s;background:var(--body-background,#fff);color:var(--card-text-color-main)}
 .comment-textarea:focus{border-color:#667eea;box-shadow:0 0 0 3px rgba(102,126,234,.1)}
 .comment-form-footer{display:flex;justify-content:space-between;align-items:center;margin-top:.6rem}
@@ -49,11 +49,11 @@
 .comment-alert{padding:.6rem .9rem;border-radius:8px;font-size:.85rem;margin-top:.6rem}
 .comment-alert-error{background:#fef2f2;color:#dc2626;border:1px solid #fecaca}
 </style>
-<section id="comments" class="article-comments">
-  <!-- Share CTA -->
+<!-- Hidden share template - JS will inject into article -->
+<template id="shareTpl">
   <div class="share-cta">
     <p>如果你喜欢这篇文章，请分享给更多人 ❤️</p>
-    <button class="share-trigger" id="shareBtn" onclick="toggleShare()">
+    <button class="share-trigger" onclick="toggleShare()">
       ↗ 分享文章
       <div class="share-dropdown" id="shareDropdown">
         <a id="shareTwitter" target="_blank" rel="noopener"><span class="sd-icon">𝕏</span>Twitter / X</a>
@@ -63,8 +63,9 @@
       </div>
     </button>
   </div>
+</template>
 
-  <!-- Comment section -->
+<section id="comments" class="article-comments">
   <div class="comment-section">
     <h3 class="comment-title">💬 评论</h3>
 
@@ -97,23 +98,36 @@
   var isAdmin = false;
   var replyTo = null;
 
-  // Share buttons
+  // Inject share CTA into article content
+  var tpl = document.getElementById('shareTpl');
+  var articleContent = document.querySelector('.article-content') || document.querySelector('article.main-article .article-content') || document.querySelector('article');
+  if (tpl && articleContent) {
+    var clone = tpl.content.cloneNode(true);
+    articleContent.appendChild(clone);
+  }
+
+  // Init share buttons (after injection)
   var et = encodeURIComponent(document.title);
   var eu = encodeURIComponent(window.location.href);
-  document.getElementById('shareTwitter').href = 'https://twitter.com/intent/tweet?text=' + et + '&url=' + eu;
-  document.getElementById('shareWeibo').href = 'https://service.weibo.com/share/share.php?title=' + et + '&url=' + eu;
-  document.getElementById('shareQQ').href = 'https://connect.qq.com/widget/shareqq/index.html?title=' + et + '&url=' + eu;
+  var stw = document.getElementById('shareTwitter');
+  var swb = document.getElementById('shareWeibo');
+  var sqq = document.getElementById('shareQQ');
+  if (stw) stw.href = 'https://twitter.com/intent/tweet?text=' + et + '&url=' + eu;
+  if (swb) swb.href = 'https://service.weibo.com/share/share.php?title=' + et + '&url=' + eu;
+  if (sqq) sqq.href = 'https://connect.qq.com/widget/shareqq/index.html?title=' + et + '&url=' + eu;
 
   window.toggleShare = function() {
     var dd = document.getElementById('shareDropdown');
-    dd.classList.toggle('show');
+    if (dd) dd.classList.toggle('show');
   };
   document.addEventListener('click', function(e) {
     if (!e.target.closest('.share-trigger')) {
-      document.getElementById('shareDropdown').classList.remove('show');
+      var dd = document.getElementById('shareDropdown');
+      if (dd) dd.classList.remove('show');
     }
   });
-  document.getElementById('shareCopyBtn').addEventListener('click', function(e) {
+  var copyBtn = document.getElementById('shareCopyBtn');
+  if (copyBtn) copyBtn.addEventListener('click', function(e) {
     e.stopPropagation();
     var btn = this;
     navigator.clipboard.writeText(window.location.href).then(function() {
