@@ -8,12 +8,15 @@
 .share-dd{display:none;position:absolute;top:50%;right:calc(100% + 8px);transform:translateY(-50%);background:var(--card-background,#fff);border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.15);padding:.5rem;z-index:100;border:1px solid var(--card-separator-color,#eee);flex-direction:row;gap:.3rem}
 .share-dd.show{display:flex;animation:sdLeft .15s ease}
 @keyframes sdLeft{from{opacity:0;transform:translateY(-50%) translateX(6px)}to{opacity:1;transform:translateY(-50%) translateX(0)}}
+@media(max-width:768px){.share-dd{top:auto;bottom:calc(100% + 8px);right:0;transform:none;flex-direction:row}.share-dd.show{animation:sdUp .15s ease}}
+@keyframes sdUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 .share-dd a,.share-dd button{display:flex;align-items:center;gap:.5rem;padding:.5rem .8rem;border:none;background:none;border-radius:6px;font-size:1.3rem;color:var(--card-text-color-main,#333);text-decoration:none;cursor:pointer;transition:background .1s;white-space:nowrap}
 .share-dd a:hover,.share-dd button:hover{background:var(--body-background,#f5f5f5)}
 
 /* === Comment Section === */
 .cmt-section{padding:var(--card-padding);background:var(--card-background);border-radius:var(--card-border-radius,10px);box-shadow:var(--shadow-l1);position:relative}
-.cmt-head{display:flex;align-items:center;gap:1.2rem;margin-bottom:2rem}
+.cmt-head{display:flex;align-items:center;gap:1.2rem;margin-bottom:.6rem}
+.cmt-sort-bar{display:flex;align-items:center;margin-bottom:1.4rem}
 .cmt-title{font-size:1.8rem;font-weight:700;color:var(--card-text-color-main);margin:0}
 .cmt-count-badge{font-size:1.3rem;color:var(--card-text-color-tertiary);background:var(--body-background,#f5f5f5);padding:.2rem 1rem;border-radius:12px}
 #cmtActions{position:absolute;top:var(--card-padding,20px);right:var(--card-padding,20px)}
@@ -92,9 +95,9 @@
     <div class="cmt-head">
       <h3 class="cmt-title">💬 评论</h3>
       <span class="cmt-count-badge" id="cmtCount"></span>
-      <div class="cmt-main-sort">
-        <button class="cmt-sort-toggle" id="cmtMainSort" onclick="toggleMainSort()">☰ 按热度</button>
-      </div>
+    </div>
+    <div class="cmt-sort-bar">
+      <button class="cmt-sort-toggle" id="cmtMainSort" onclick="toggleMainSort()">☰ 按热度</button>
     </div>
 
     <div id="cmtActions">
@@ -304,41 +307,47 @@
     return '<div class="c-item"><span class="c-avatar" style="background:'+col+'">'+esc(ini)+'</span><div class="c-body"><div class="c-meta"><span class="c-name">'+esc(c.user_name)+'</span></div><div class="c-text">'+textH+'</div><div class="c-actions"><span class="c-time">'+ts+'</span>'+replyH+'<div class="c-actions-right">'+likeH+delH+'</div></div></div></div>';
   }
 
-  var detailSortMode='hot';
+  var detailSortMode='hot', currentDetailId=null;
   window.openDetail=function(parentId){
     detailSortMode='hot';
+    currentDetailId=parentId;
     var el=document.getElementById('cmtDetail');
     document.getElementById('cmtList').style.display='none';
+    document.querySelector('.cmt-sort-bar').style.display='none';
     el.style.display='';
-    renderDetail(parentId);
+    renderDetail();
   };
   window.closeDetail=function(){
+    document.querySelector('.cmt-sort-bar').style.display='';
+    currentDetailId=null;
     renderList();
   };
 
-  function renderDetail(parentId){
+  function renderDetail(){
+    var parentId=currentDetailId;
     var el=document.getElementById('cmtDetail');
     var parent=null;
-    allComments.forEach(function(c){if(c.id===parentId) parent=c;});
+    allComments.forEach(function(c){if(String(c.id)===String(parentId)) parent=c;});
     if(!parent){el.innerHTML='';return;}
     var kids=getKids();
     var h='<div class="cmt-detail-header"><span class="cmt-detail-title">\u8bc4\u8bba\u8be6\u60c5</span><button class="cmt-detail-close" onclick="closeDetail()">\u2715</button></div>';
     h+=renderC(parent,{});
     var replies=kids[parentId]||[];
+    if(!replies.length){allComments.forEach(function(c){if(String(c.parent_id)===String(parentId)) replies.push(c);});}
     var sorted;
     if(detailSortMode==='time') sorted=replies.slice().sort(function(a,b){return Number(a.created_at)-Number(b.created_at);});
     else sorted=replies.slice().sort(function(a,b){return(b.likes||0)-(a.likes||0);});
     var sortLabel=detailSortMode==='hot'?'\u6309\u70ed\u5ea6':'\u6309\u65f6\u95f4';
-    h+='<div class="cmt-detail-replies-header"><span>\u76f8\u5173\u56de\u590d\u5171'+replies.length+'\u6761</span><button class="cmt-sort-toggle" onclick="toggleDetailSort(\''+parentId+'\')">\u2630 '+sortLabel+'</button></div>';
+    h+='<div class="cmt-detail-replies-header"><span>\u76f8\u5173\u56de\u590d\u5171'+replies.length+'\u6761</span><button class="cmt-sort-toggle" onclick="toggleDetailSort()">\u2630 '+sortLabel+'</button></div>';
     h+='<div class="c-reply-list">';
     sorted.forEach(function(r){h+=renderReply(r);});
     h+='</div>';
     el.innerHTML=h;
   }
 
-  window.toggleDetailSort=function(parentId){
+  window.toggleDetailSort=function(){
     detailSortMode=detailSortMode==='hot'?'time':'hot';
-    renderDetail(parentId);
+    renderDetail();
   };
 
   function pad(n){return n<10?'0'+n:''+n;}
