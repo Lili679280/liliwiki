@@ -22,21 +22,30 @@
 .cmt-write-btn:hover{opacity:.85}
 .cmt-login-link{display:inline-flex;align-items:center;gap:.6rem;padding:.5rem 1.4rem;background:var(--accent-color,#667eea);color:var(--accent-color-text,#fff)!important;border:none;border-radius:8px;font-size:1.3rem;font-weight:600;cursor:pointer;text-decoration:none;transition:opacity .15s}
 .cmt-login-link:hover{opacity:.85}
-.cmt-form{display:none;margin-top:1.5rem;padding:2rem;background:var(--body-background,#f9f9f9);border-radius:10px}
-.cmt-form.show{display:block;animation:cmtSlide .2s ease}
+.cmt-form{display:none;margin-top:1.5rem}
+.cmt-form.show{display:block;animation:cmtSlide .25s ease}
 @keyframes cmtSlide{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
-.cmt-form-user{display:flex;align-items:center;gap:1rem;margin-bottom:1.2rem;font-size:1.4rem;color:var(--card-text-color-secondary)}
-.cmt-textarea{width:100%;padding:1.2rem 1.6rem;border:1.5px solid var(--card-separator-color,#e0e0e0);border-radius:10px;font-size:1.4rem;font-family:inherit;resize:vertical;min-height:100px;outline:none;transition:border-color .2s;background:var(--card-background,#fff);color:var(--card-text-color-main);box-sizing:border-box;line-height:1.6}
-.cmt-textarea:focus{border-color:var(--accent-color,#667eea);box-shadow:0 0 0 3px rgba(102,126,234,.08)}
-.cmt-form-ft{display:flex;justify-content:space-between;align-items:center;margin-top:1rem}
-.cmt-char{font-size:1.2rem;color:var(--card-text-color-tertiary)}
-.cmt-send{padding:.8rem 2rem;background:var(--accent-color,#667eea);color:var(--accent-color-text,#fff);border:none;border-radius:8px;font-size:1.4rem;font-weight:600;cursor:pointer;transition:opacity .15s}
-.cmt-send:hover{opacity:.85}
-.cmt-send:disabled{opacity:.4;cursor:not-allowed}
-.cmt-alert{padding:.8rem 1.4rem;border-radius:8px;font-size:1.3rem;margin-top:1rem}
+.cmt-form-user{display:flex;align-items:center;gap:.8rem;margin-bottom:1rem;font-size:1.3rem;color:var(--card-text-color-secondary)}
+.cmt-form-user .cmt-user-avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:700;color:#fff;flex-shrink:0}
+.cmt-form-user .cmt-user-name{font-weight:600;color:var(--card-text-color-main)}
+.cmt-field-wrap{position:relative;margin-bottom:0}
+.cmt-field-wrap .cmt-float-label{position:absolute;left:1.4rem;top:1.2rem;font-size:1.4rem;color:var(--card-text-color-tertiary,#999);pointer-events:none;transition:all .2s cubic-bezier(.4,0,.2,1);transform-origin:left top;background:transparent;padding:0 .4rem}
+.cmt-field-wrap .cmt-textarea:focus~.cmt-float-label,.cmt-field-wrap .cmt-textarea.has-content~.cmt-float-label{top:-.6rem;left:1rem;font-size:1.1rem;color:var(--accent-color,#667eea);background:var(--card-background,#fff)}
+.cmt-textarea{width:100%;padding:1.2rem 1.4rem;border:2px solid var(--card-separator-color,#e0e0e0);border-radius:12px;font-size:1.4rem;font-family:inherit;resize:none;min-height:48px;max-height:200px;outline:none;transition:border-color .2s,box-shadow .2s;background:var(--card-background,#fff);color:var(--card-text-color-main);box-sizing:border-box;line-height:1.6;overflow-y:auto}
+.cmt-textarea:focus{border-color:var(--accent-color,#667eea);box-shadow:0 0 0 3px rgba(102,126,234,.1)}
+.cmt-form-ft{display:flex;justify-content:space-between;align-items:center;margin-top:.8rem;padding:0 .2rem}
+.cmt-form-tools{display:flex;align-items:center;gap:.6rem}
+.cmt-char{font-size:1.15rem;color:var(--card-text-color-tertiary);transition:color .2s}
+.cmt-char.warn{color:#f59e0b}
+.cmt-char.danger{color:#ef4444}
+.cmt-send{padding:.6rem 1.8rem;background:var(--accent-color,#667eea);color:var(--accent-color-text,#fff);border:none;border-radius:20px;font-size:1.3rem;font-weight:600;cursor:pointer;transition:all .2s;box-shadow:0 2px 8px rgba(102,126,234,.25)}
+.cmt-send:hover{opacity:.9;box-shadow:0 4px 12px rgba(102,126,234,.35);transform:translateY(-1px)}
+.cmt-send:active{transform:translateY(0);box-shadow:0 2px 6px rgba(102,126,234,.2)}
+.cmt-send:disabled{opacity:.4;cursor:not-allowed;box-shadow:none;transform:none}
+.cmt-alert{padding:.8rem 1.4rem;border-radius:8px;font-size:1.3rem;margin-top:.8rem}
 .cmt-alert-error{background:#fef2f2;color:#dc2626;border:1px solid #fecaca}
-.reply-tag{font-size:1.3rem;color:var(--card-text-color-secondary);margin-bottom:1rem;padding:.4rem 1rem;background:rgba(102,126,234,.06);border-radius:6px;display:inline-flex;align-items:center;gap:.6rem}
-.reply-tag button{background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--card-text-color-tertiary);padding:0 .3rem}
+.reply-tag{font-size:1.25rem;color:var(--accent-color,#667eea);margin-bottom:.8rem;padding:.5rem 1.2rem;background:rgba(102,126,234,.06);border:1px solid rgba(102,126,234,.15);border-radius:20px;display:inline-flex;align-items:center;gap:.6rem}
+.reply-tag button{background:none;border:none;cursor:pointer;font-size:1.2rem;color:var(--card-text-color-tertiary);padding:0 .2rem;transition:color .15s}
 .reply-tag button:hover{color:#ef4444}
 .cmt-list{margin-top:2rem}
 .cmt-empty{text-align:center;padding:4rem 1rem;color:var(--card-text-color-tertiary,#bbb)}
@@ -101,9 +110,12 @@
 
     <div class="cmt-form" id="cmtForm">
       <div class="cmt-form-user" id="cmtUser"></div>
-      <textarea id="cmtInput" class="cmt-textarea" placeholder="写下你的评论..." maxlength="1000" rows="3"></textarea>
+      <div class="cmt-field-wrap">
+        <textarea id="cmtInput" class="cmt-textarea" maxlength="1000" rows="1"></textarea>
+        <label class="cmt-float-label" for="cmtInput">说点什么...</label>
+      </div>
       <div class="cmt-form-ft">
-        <div style="display:flex;align-items:center;gap:.8rem">
+        <div class="cmt-form-tools">
           <button type="button" class="emoji-trigger" id="emojiBtn" title="表情">😀</button>
           <span class="cmt-char"><span id="cmtChar">0</span>/1000</span>
         </div>
@@ -183,7 +195,7 @@
       curUser=u; isAdmin=u.role==='admin'||u.role==='sub_admin';
       document.getElementById('cmtWriteBtn').style.display='';
       document.getElementById('cmtLoginLink').style.display='none';
-      document.getElementById('cmtUser').innerHTML='<span class="c-avatar" style="background:'+hc(u.username||u.email)+'">'+esc(u.username||u.email)[0].toUpperCase()+'</span><span class="c-name">'+esc(u.username||u.email)+'</span>';
+      document.getElementById('cmtUser').innerHTML='<span class="cmt-user-avatar" style="background:'+hc(u.username||u.email)+'">'+esc(u.username||u.email)[0].toUpperCase()+'</span><span class="cmt-user-name">'+esc(u.username||u.email)+'</span>';
     } else { doLogin(); }
   }).catch(function(){ doLogin(); });
 
@@ -202,7 +214,13 @@
 
   // === Load & render comments ===
   loadCmts();
-  document.getElementById('cmtInput').addEventListener('input',function(){document.getElementById('cmtChar').textContent=this.value.length;});
+  var cmtInput=document.getElementById('cmtInput'),cmtCharEl=document.getElementById('cmtChar'),cmtCharWrap=cmtCharEl.parentElement;
+  function autoResize(){cmtInput.style.height='auto';cmtInput.style.height=Math.min(cmtInput.scrollHeight,200)+'px';}
+  function updateFloatLabel(){if(cmtInput.value.length>0){cmtInput.classList.add('has-content');}else{cmtInput.classList.remove('has-content');}}
+  function updateCharColor(){var l=cmtInput.value.length;cmtCharWrap.className='cmt-char'+(l>900?' danger':l>700?' warn':'');}
+  cmtInput.addEventListener('input',function(){cmtCharEl.textContent=this.value.length;autoResize();updateFloatLabel();updateCharColor();});
+  cmtInput.addEventListener('focus',function(){autoResize();});
+  cmtInput.addEventListener('blur',function(){if(!this.value){this.style.height='';}});
   document.getElementById('cmtSend').addEventListener('click',submitCmt);
 
   // === Emoji picker ===
@@ -217,7 +235,8 @@
     ta.value=ta.value.substring(0,start)+emoji+ta.value.substring(end);
     ta.selectionStart=ta.selectionEnd=start+emoji.length;
     ta.focus();
-    document.getElementById('cmtChar').textContent=ta.value.length;
+    cmtCharEl.textContent=ta.value.length;
+    autoResize();updateFloatLabel();updateCharColor();
   };
 
   function loadCmts(){
@@ -362,7 +381,7 @@
     postAPI('/api/comments',{url:pageUrl,content:content,parent_id:replyTo||''}).then(function(d){
       btn.disabled=false; btn.textContent='\u53d1\u9001';
       if(d.error){showAlert(d.error);}
-      else{input.value='';document.getElementById('cmtChar').textContent='0';cancelReply();folded=false;loadCmts();}
+      else{input.value='';cmtCharEl.textContent='0';input.style.height='';input.classList.remove('has-content');cmtCharWrap.className='cmt-char';cancelReply();folded=false;loadCmts();}
     }).catch(function(){btn.disabled=false;btn.textContent='\u53d1\u9001';showAlert('\u53d1\u9001\u5931\u8d25');});
   }
 
@@ -384,14 +403,14 @@
     var f=document.getElementById('cmtForm');
     if(!f.classList.contains('show')) f.classList.add('show');
     var input=document.getElementById('cmtInput');
-    input.placeholder='\u56de\u590d '+name+'...';
+    var fl=document.querySelector('.cmt-float-label');if(fl)fl.textContent='\u56de\u590d '+name+'...';
     input.focus();
     var ex=document.getElementById('replyTag');if(ex)ex.remove();
     var tag=document.createElement('div');tag.id='replyTag';tag.className='reply-tag';
     tag.innerHTML='\u56de\u590d <b>'+esc(name)+'</b> <button onclick="cancelReply()">\u2715</button>';
-    input.parentNode.insertBefore(tag,input);
+    var fw=document.querySelector('.cmt-field-wrap');fw.parentNode.insertBefore(tag,fw);
   };
-  window.cancelReply=function(){replyTo=null;replyTargetName=null;document.getElementById('cmtInput').placeholder='\u5199\u4e0b\u4f60\u7684\u8bc4\u8bba...';var ex=document.getElementById('replyTag');if(ex)ex.remove();};
+  window.cancelReply=function(){replyTo=null;replyTargetName=null;var fl=document.querySelector('.cmt-float-label');if(fl)fl.textContent='\u8bf4\u70b9\u4ec0\u4e48...';var ex=document.getElementById('replyTag');if(ex)ex.remove();};
   function showAlert(msg){var el=document.getElementById('cmtAlert');el.textContent=msg;el.className='cmt-alert cmt-alert-error';el.style.display='block';setTimeout(function(){el.style.display='none';},3000);}
 })();
 </script>
