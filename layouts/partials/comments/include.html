@@ -103,6 +103,13 @@
 .emoji-grid button:hover{background:var(--body-background,#f0f0f0)}
 .cmt-more{background:none;border:1px dashed var(--card-separator-color,#ddd);padding:1rem;border-radius:8px;width:100%;font-size:1.3rem;color:var(--card-text-color-tertiary);cursor:pointer;margin-top:1.2rem;transition:all .15s}
 .cmt-more:hover{border-color:var(--accent-color,#667eea);color:var(--accent-color,#667eea)}
+.c-btn.report:hover{color:#f59e0b}
+.report-modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.4);z-index:200;align-items:center;justify-content:center}
+.report-modal.show{display:flex}
+.report-modal-content{background:var(--card-background,#fff);border-radius:16px;padding:1.5rem;width:90%;max-width:340px;box-shadow:0 10px 40px rgba(0,0,0,.2)}
+.report-opt{display:block;width:100%;text-align:left;padding:.7rem 1rem;margin:.3rem 0;border:1.5px solid var(--card-separator-color,#e0e0e0);border-radius:8px;background:none;font-size:1.3rem;cursor:pointer;transition:all .15s;color:var(--card-text-color-main)}
+.report-opt:hover{border-color:var(--accent-color,#667eea);background:rgba(102,126,234,.05)}
+.report-toast{position:fixed;top:1rem;left:50%;transform:translateX(-50%);background:#16a34a;color:#fff;padding:.6rem 1.2rem;border-radius:10px;font-size:1.3rem;font-weight:600;z-index:300;animation:cmtSlide .3s ease}
 </style>
 
 <section id="comments" class="article-comments">
@@ -314,8 +321,9 @@
     var liked=curUser&&lb.indexOf(curUser.email)!==-1;
     var replyH=curUser?'<button class="c-btn" onclick="replyTo(\''+c.id+'\',\''+esc(c.user_name)+'\')">\u56de\u590d</button>':'';
     var delH=isAdmin?'<button class="c-btn del" onclick="delCmt(\''+c.id+'\')">\u5220\u9664</button>':'';
+    var reportH=curUser?'<button class="c-btn report" onclick="openReport(\'comment\',\''+c.id+'\')">\u26a0</button>':'';
     var likeH='<button class="c-btn'+(liked?' liked':'')+'" onclick="likeCmt(\''+c.id+'\')">'+'\uD83D\uDC4D'+(lk?' '+lk:'')+'</button>';
-    var html='<div class="c-item" id="c-'+c.id+'">'+avatarH+'<div class="c-body"><div class="c-meta"><span class="c-name">'+esc(c.user_name)+'</span></div><div class="c-text">'+esc(c.content)+'</div><div class="c-actions"><span class="c-time">'+ts+'</span>'+replyH+'<div class="c-actions-right">'+likeH+delH+'</div></div>';
+    var html='<div class="c-item" id="c-'+c.id+'">'+avatarH+'<div class="c-body"><div class="c-meta"><span class="c-name">'+esc(c.user_name)+'</span></div><div class="c-text">'+esc(c.content)+'</div><div class="c-actions"><span class="c-time">'+ts+'</span>'+replyH+'<div class="c-actions-right">'+likeH+reportH+delH+'</div></div>';
     var replies=kids[c.id];
     if(replies&&replies.length){
       var hotSorted=replies.slice().sort(function(a,b){return(b.likes||0)-(a.likes||0);});
@@ -343,9 +351,10 @@
     var liked=curUser&&lb.indexOf(curUser.email)!==-1;
     var replyH=curUser?'<button class="c-btn" onclick="replyTo(\''+c.id+'\',\''+esc(c.user_name)+'\')">\u56de\u590d</button>':'';
     var delH=isAdmin?'<button class="c-btn del" onclick="delCmt(\''+c.id+'\')">\u5220\u9664</button>':'';
+    var reportH=curUser?'<button class="c-btn report" onclick="openReport(\'comment\',\''+c.id+'\')">\u26a0</button>':'';
     var likeH='<button class="c-btn'+(liked?' liked':'')+'" onclick="likeCmt(\''+c.id+'\')">'+'\uD83D\uDC4D'+(lk?' '+lk:'')+'</button>';
     var textH=fmtReplyContent(c.content);
-    return '<div class="c-item">'+avatarH+'<div class="c-body"><div class="c-meta"><span class="c-name">'+esc(c.user_name)+'</span></div><div class="c-text">'+textH+'</div><div class="c-actions"><span class="c-time">'+ts+'</span>'+replyH+'<div class="c-actions-right">'+likeH+delH+'</div></div></div></div>';
+    return '<div class="c-item">'+avatarH+'<div class="c-body"><div class="c-meta"><span class="c-name">'+esc(c.user_name)+'</span></div><div class="c-text">'+textH+'</div><div class="c-actions"><span class="c-time">'+ts+'</span>'+replyH+'<div class="c-actions-right">'+likeH+reportH+delH+'</div></div></div></div>';
   }
 
   var detailSortMode='hot', currentDetailId=null;
@@ -438,6 +447,29 @@
   };
   window.cancelReply=function(){replyTo=null;replyTargetName=null;var fl=document.querySelector('.cmt-float-label');if(fl)fl.textContent='\u8bf4\u70b9\u4ec0\u4e48...';var ex=document.getElementById('replyTag');if(ex)ex.remove();};
   function showAlert(msg){var el=document.getElementById('cmtAlert');el.textContent=msg;el.className='cmt-alert cmt-alert-error';el.style.display='block';setTimeout(function(){el.style.display='none';},3000);}
+
+  // === Report ===
+  var reportType='', reportTargetId='';
+  window.openReport=function(type,targetId){
+    if(!curUser) return;
+    reportType=type; reportTargetId=targetId;
+    var modal=document.getElementById('reportModal');
+    if(!modal){
+      modal=document.createElement('div');modal.id='reportModal';modal.className='report-modal';
+      modal.innerHTML='<div class="report-modal-content"><h3 style="font-size:1.5rem;margin-bottom:.8rem">\u4e3e\u62a5</h3><button class="report-opt" onclick="submitReport(\'\u8bc4\u8bba\u5185\u5bb9\u8fdd\u89c4\')">\u8bc4\u8bba\u5185\u5bb9\u8fdd\u89c4</button><button class="report-opt" onclick="submitReport(\'\u5934\u50cf\u8fdd\u89c4\')">\u5934\u50cf\u8fdd\u89c4</button><button class="report-opt" onclick="submitReport(\'\u5783\u573e\u5e7f\u544a\')">\u5783\u573e\u5e7f\u544a</button><button class="report-opt" onclick="submitReport(\'\u5176\u4ed6\')">\u5176\u4ed6</button><button style="width:100%;margin-top:.6rem;padding:.6rem;background:none;border:1px solid var(--card-separator-color,#ddd);border-radius:8px;font-size:1.2rem;cursor:pointer;color:var(--card-text-color-tertiary)" onclick="closeReport()">\u53d6\u6d88</button></div>';
+      document.body.appendChild(modal);
+      modal.addEventListener('click',function(e){if(e.target===modal)closeReport();});
+    }
+    modal.classList.add('show');
+  };
+  window.closeReport=function(){var m=document.getElementById('reportModal');if(m)m.classList.remove('show');};
+  window.submitReport=function(reason){
+    closeReport();
+    postAPI('/api/report',{type:reportType,targetId:reportTargetId,reason:reason}).then(function(d){
+      if(d.ok){var t=document.createElement('div');t.className='report-toast';t.textContent=d.message||'\u4e3e\u62a5\u5df2\u63d0\u4ea4';document.body.appendChild(t);setTimeout(function(){t.remove();},2500);}
+      else{showAlert(d.error||'\u4e3e\u62a5\u5931\u8d25');}
+    }).catch(function(){showAlert('\u7f51\u7edc\u9519\u8bef');});
+  };
 })();
 </script>
 {{ end }}
