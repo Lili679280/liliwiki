@@ -22,12 +22,11 @@
 .cmt-write-btn:hover{opacity:.85}
 .cmt-login-link{display:inline-flex;align-items:center;gap:.6rem;padding:.5rem 1.4rem;background:var(--accent-color,#667eea);color:var(--accent-color-text,#fff)!important;border:none;border-radius:8px;font-size:1.3rem;font-weight:600;cursor:pointer;text-decoration:none;transition:opacity .15s}
 .cmt-login-link:hover{opacity:.85}
-.cmt-form{display:none;margin-top:1.5rem}
+.cmt-form{display:none;margin-top:1.5rem;position:relative}
 .cmt-form.show{display:block;animation:cmtSlide .25s ease}
 @keyframes cmtSlide{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
-.cmt-form-user{display:flex;align-items:center;gap:.8rem;margin-bottom:1rem;font-size:1.3rem;color:var(--card-text-color-secondary)}
-.cmt-form-user .cmt-user-avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:700;color:#fff;flex-shrink:0}
-.cmt-form-user .cmt-user-name{font-weight:600;color:var(--card-text-color-main)}
+.cmt-form-close{position:absolute;top:.2rem;right:.2rem;background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--card-text-color-tertiary,#999);padding:.3rem .5rem;border-radius:4px;transition:all .15s;line-height:1;z-index:1}
+.cmt-form-close:hover{color:var(--card-text-color-main);background:var(--body-background,#f0f0f0)}
 .cmt-field-wrap{position:relative;margin-bottom:0}
 .cmt-field-wrap .cmt-float-label{position:absolute;left:1.4rem;top:1.2rem;font-size:1.4rem;color:var(--card-text-color-tertiary,#999);pointer-events:none;transition:all .2s cubic-bezier(.4,0,.2,1);transform-origin:left top;background:transparent;padding:0 .4rem}
 .cmt-field-wrap .cmt-textarea:focus~.cmt-float-label,.cmt-field-wrap .cmt-textarea.has-content~.cmt-float-label{top:-.6rem;left:1rem;font-size:1.1rem;color:var(--accent-color,#667eea);background:var(--card-background,#fff)}
@@ -109,7 +108,7 @@
     </div>
 
     <div class="cmt-form" id="cmtForm">
-      <div class="cmt-form-user" id="cmtUser"></div>
+      <button type="button" class="cmt-form-close" id="cmtFormClose" onclick="toggleForm()">✕</button>
       <div class="cmt-field-wrap">
         <textarea id="cmtInput" class="cmt-textarea" maxlength="1000" rows="1"></textarea>
         <label class="cmt-float-label" for="cmtInput">说点什么...</label>
@@ -195,7 +194,6 @@
       curUser=u; isAdmin=u.role==='admin'||u.role==='sub_admin';
       document.getElementById('cmtWriteBtn').style.display='';
       document.getElementById('cmtLoginLink').style.display='none';
-      document.getElementById('cmtUser').innerHTML='<span class="cmt-user-avatar" style="background:'+hc(u.username||u.email)+'">'+esc(u.username||u.email)[0].toUpperCase()+'</span><span class="cmt-user-name">'+esc(u.username||u.email)+'</span>';
     } else { doLogin(); }
   }).catch(function(){ doLogin(); });
 
@@ -224,7 +222,7 @@
   document.getElementById('cmtSend').addEventListener('click',submitCmt);
 
   // === Emoji picker ===
-  var EMOJIS='😀,😂,😍,🤣,😎,😢,😱,🙏,👍,👎,❤️,🔥,🎉,💯,✨,🚀,🤔,🙄,😉,😘,🥺,😡,👀,💪,🌟,🌻,☕,🍻,🎂,🏆'.split(',');
+  var EMOJIS='😀,😃,😄,😁,😆,😅,😂,🤣,�,😇,🙂,🙃,😉,😌,��,🥰,😘,😗,😚,😙,🥲,🤗,�,😎,🤩,🥳,�,😒,😞,😔,😟,😕,🙁,😣,😖,😫,😩,🥺,��,😭,😤,�,🤬,🤯,😳,🥵,🥶,��,😨,😰,😥,🤔,🤫,🤥,😶,�,😑,🙄,😬,🥱,😴,🤤,😋,😝,🤢,🤮,🤧,🥴,🥸,😷,🤠,🤡,👻,👽,🤖,💩,👍,👎,👊,✊,✌️,🤞,🤟,🤘,�,👏,�,🙏,�,❤️,�,�,�,�,💜,�,�,❣️,�,✨,🌟,💫,�,☀️,🌙,⭐,🎉,🎊,🏆,🎖️,💯,🚀,✈️,🌍,🌸,��,🌺,🌷,🍀,🍃,🍂,☕,�,🍺,��,�,🍰,��,�,🍩,🍕,🍔,🍜,🍣,🍞,🥐,🐶,🐱,🐭,🐹,🐰,🦊,🐻,🐼,🐨,🐯,🦁,🐷,🐸,🐵,🐒,🐧,🦅,🦉,🐾,🎵,🎶,🎤,🎬,📷,📱,💻,📚,✍️,💡,🔔,📣,✅,❌,❗,❓,🚫,♻️'.split(',');
   var emojiPanel=document.getElementById('emojiPanel');
   emojiPanel.innerHTML=EMOJIS.map(function(e){return '<button type="button" onclick="insertEmoji(\''+e+'\')">' +e+'</button>';}).join('');
   document.getElementById('emojiBtn').addEventListener('click',function(ev){ev.stopPropagation();emojiPanel.classList.toggle('show');});
@@ -331,6 +329,7 @@
     document.getElementById('cmtList').style.display='none';
     document.getElementById('cmtActions').style.display='none';
     document.querySelector('.cmt-sort-bar').style.display='none';
+    var cmtForm=document.getElementById('cmtForm');if(cmtForm.classList.contains('show'))cmtForm.classList.remove('show');
     el.style.display='';
     renderDetail();
   };
