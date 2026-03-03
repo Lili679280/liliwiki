@@ -56,7 +56,8 @@
 .cmt-loading{text-align:center;padding:3rem;color:var(--card-text-color-tertiary);font-size:1.4rem}
 .c-item{display:flex;gap:1.2rem;padding:1.6rem 0}
 .c-item+.c-item{border-top:1px solid var(--card-separator-color,#f0f0f0)}
-.c-avatar{width:40px;height:40px;border-radius:50%;color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:700;flex-shrink:0}
+.c-avatar{width:40px;height:40px;border-radius:50%;color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:700;flex-shrink:0;overflow:hidden}
+.c-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
 .c-body{flex:1;min-width:0}
 .c-meta{display:flex;align-items:center;gap:.8rem;margin-bottom:.4rem}
 .c-name{font-weight:600;font-size:1.4rem;color:var(--card-text-color-main)}
@@ -308,13 +309,13 @@
 
   function renderC(c,kids){
     var ts=fmtTime(c.created_at);
-    var ini=(c.user_name||'?')[0].toUpperCase(), col=hc(c.user_name||'?');
+    var avatarH=c.avatar?'<span class="c-avatar"><img src="'+esc(c.avatar)+'" alt=""></span>':'<span class="c-avatar" style="background:'+hc(c.user_name||'?')+'">'+esc((c.user_name||'?')[0].toUpperCase())+'</span>';
     var lk=c.likes||0, lb=[];try{lb=JSON.parse(c.liked_by||'[]');}catch(e){}
     var liked=curUser&&lb.indexOf(curUser.email)!==-1;
     var replyH=curUser?'<button class="c-btn" onclick="replyTo(\''+c.id+'\',\''+esc(c.user_name)+'\')">\u56de\u590d</button>':'';
     var delH=isAdmin?'<button class="c-btn del" onclick="delCmt(\''+c.id+'\')">\u5220\u9664</button>':'';
     var likeH='<button class="c-btn'+(liked?' liked':'')+'" onclick="likeCmt(\''+c.id+'\')">'+'\uD83D\uDC4D'+(lk?' '+lk:'')+'</button>';
-    var html='<div class="c-item" id="c-'+c.id+'"><span class="c-avatar" style="background:'+col+'">'+esc(ini)+'</span><div class="c-body"><div class="c-meta"><span class="c-name">'+esc(c.user_name)+'</span></div><div class="c-text">'+esc(c.content)+'</div><div class="c-actions"><span class="c-time">'+ts+'</span>'+replyH+'<div class="c-actions-right">'+likeH+delH+'</div></div>';
+    var html='<div class="c-item" id="c-'+c.id+'">'+avatarH+'<div class="c-body"><div class="c-meta"><span class="c-name">'+esc(c.user_name)+'</span></div><div class="c-text">'+esc(c.content)+'</div><div class="c-actions"><span class="c-time">'+ts+'</span>'+replyH+'<div class="c-actions-right">'+likeH+delH+'</div></div>';
     var replies=kids[c.id];
     if(replies&&replies.length){
       var hotSorted=replies.slice().sort(function(a,b){return(b.likes||0)-(a.likes||0);});
@@ -337,14 +338,14 @@
 
   function renderReply(c){
     var ts=fmtTime(c.created_at);
-    var ini=(c.user_name||'?')[0].toUpperCase(), col=hc(c.user_name||'?');
+    var avatarH=c.avatar?'<span class="c-avatar"><img src="'+esc(c.avatar)+'" alt=""></span>':'<span class="c-avatar" style="background:'+hc(c.user_name||'?')+'">'+esc((c.user_name||'?')[0].toUpperCase())+'</span>';
     var lk=c.likes||0, lb=[];try{lb=JSON.parse(c.liked_by||'[]');}catch(e){}
     var liked=curUser&&lb.indexOf(curUser.email)!==-1;
     var replyH=curUser?'<button class="c-btn" onclick="replyTo(\''+c.id+'\',\''+esc(c.user_name)+'\')">\u56de\u590d</button>':'';
     var delH=isAdmin?'<button class="c-btn del" onclick="delCmt(\''+c.id+'\')">\u5220\u9664</button>':'';
     var likeH='<button class="c-btn'+(liked?' liked':'')+'" onclick="likeCmt(\''+c.id+'\')">'+'\uD83D\uDC4D'+(lk?' '+lk:'')+'</button>';
     var textH=fmtReplyContent(c.content);
-    return '<div class="c-item"><span class="c-avatar" style="background:'+col+'">'+esc(ini)+'</span><div class="c-body"><div class="c-meta"><span class="c-name">'+esc(c.user_name)+'</span></div><div class="c-text">'+textH+'</div><div class="c-actions"><span class="c-time">'+ts+'</span>'+replyH+'<div class="c-actions-right">'+likeH+delH+'</div></div></div></div>';
+    return '<div class="c-item">'+avatarH+'<div class="c-body"><div class="c-meta"><span class="c-name">'+esc(c.user_name)+'</span></div><div class="c-text">'+textH+'</div><div class="c-actions"><span class="c-time">'+ts+'</span>'+replyH+'<div class="c-actions-right">'+likeH+delH+'</div></div></div></div>';
   }
 
   var detailSortMode='hot', currentDetailId=null;
