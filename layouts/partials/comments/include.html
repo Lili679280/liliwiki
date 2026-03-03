@@ -60,18 +60,23 @@
 .c-reply-preview{background:var(--body-background,#f5f5f5);border-radius:8px;padding:1rem 1.4rem;font-size:1.3rem;line-height:1.6;color:var(--card-text-color-main)}
 .c-reply-preview .c-rp-name{color:var(--accent-color,#667eea);font-weight:600;margin-right:.4rem}
 .c-reply-preview .c-rp-like{font-size:1.1rem;color:var(--card-text-color-tertiary);margin-left:.8rem}
-.c-reply-header{display:flex;align-items:center;justify-content:space-between;padding:.6rem 0;margin-top:.4rem;font-size:1.2rem;color:var(--card-text-color-tertiary)}
-.c-reply-header .c-sort-btns{display:flex;gap:.8rem}
-.c-reply-header .c-sort-btn{background:none;border:none;cursor:pointer;font-size:1.2rem;color:var(--card-text-color-tertiary);padding:.2rem .4rem;border-radius:4px;transition:all .12s}
-.c-reply-header .c-sort-btn:hover,.c-reply-header .c-sort-btn.active{color:var(--accent-color,#667eea);font-weight:600}
 .c-reply-expand{display:inline-flex;align-items:center;gap:.3rem;font-size:1.2rem;color:var(--accent-color,#667eea);cursor:pointer;background:none;border:none;padding:.4rem 0;font-weight:500}
 .c-reply-expand:hover{opacity:.8}
-.c-reply-list{margin-top:.4rem}
-.c-reply-list .c-item{padding:1rem 0}
-.c-reply-list .c-item+.c-item{border-top:1px solid var(--card-separator-color,#f0f0f0)}
-.c-reply-list .c-avatar{width:28px;height:28px;font-size:1.1rem}
-.c-reply-list .c-text{font-size:1.3rem}
-.c-reply-list .c-actions{font-size:1.1rem;gap:1.2rem}
+.c-reply-to{color:var(--accent-color,#667eea);font-weight:500;margin-right:.3rem}
+.cmt-main-sort{display:flex;align-items:center;gap:.6rem;margin-left:auto}
+.cmt-sort-toggle{background:none;border:none;cursor:pointer;font-size:1.2rem;color:var(--card-text-color-tertiary);display:inline-flex;align-items:center;gap:.3rem;padding:.3rem .6rem;border-radius:4px;transition:all .12s}
+.cmt-sort-toggle:hover{color:var(--accent-color,#667eea)}
+.cmt-detail{position:relative;margin-top:2rem}
+.cmt-detail-header{display:flex;align-items:center;justify-content:space-between;padding-bottom:1.2rem;border-bottom:1px solid var(--card-separator-color,#f0f0f0);margin-bottom:.4rem}
+.cmt-detail-title{font-size:1.5rem;font-weight:600;color:var(--card-text-color-main)}
+.cmt-detail-close{background:none;border:none;font-size:1.6rem;cursor:pointer;color:var(--card-text-color-tertiary);padding:.3rem;border-radius:4px;transition:all .12s;line-height:1}
+.cmt-detail-close:hover{color:var(--accent-color,#667eea);background:var(--body-background,#f5f5f5)}
+.cmt-detail-replies-header{display:flex;align-items:center;justify-content:space-between;padding:.8rem 0;font-size:1.2rem;color:var(--card-text-color-tertiary);border-top:1px solid var(--card-separator-color,#f0f0f0);margin-top:.4rem}
+.cmt-detail .c-reply-list .c-item{padding:1rem 0}
+.cmt-detail .c-reply-list .c-item+.c-item{border-top:1px solid var(--card-separator-color,#f0f0f0)}
+.cmt-detail .c-reply-list .c-avatar{width:32px;height:32px;font-size:1.2rem}
+.cmt-detail .c-reply-list .c-text{font-size:1.3rem}
+.cmt-detail .c-reply-list .c-actions{font-size:1.1rem;gap:1.2rem}
 .emoji-trigger{background:none;border:none;font-size:1.6rem;cursor:pointer;padding:.3rem;border-radius:4px;transition:background .1s;line-height:1}
 .emoji-trigger:hover{background:var(--body-background,#f0f0f0)}
 .emoji-panel{display:none;flex-wrap:wrap;gap:.3rem;padding:.8rem;background:var(--card-background,#fff);border:1px solid var(--card-separator-color,#e0e0e0);border-radius:8px;margin-top:.6rem;max-height:160px;overflow-y:auto}
@@ -87,6 +92,9 @@
     <div class="cmt-head">
       <h3 class="cmt-title">💬 评论</h3>
       <span class="cmt-count-badge" id="cmtCount"></span>
+      <div class="cmt-main-sort">
+        <button class="cmt-sort-toggle" id="cmtMainSort" onclick="toggleMainSort()">☰ 按热度</button>
+      </div>
     </div>
 
     <div id="cmtActions">
@@ -109,13 +117,14 @@
     </div>
 
     <div id="cmtList" class="cmt-list"><div class="cmt-loading">加载中...</div></div>
+    <div id="cmtDetail" class="cmt-detail" style="display:none"></div>
   </div>
 </section>
 
 <script>
 (function(){
   var API='https://auth.liliwiki.com', pageUrl=window.location.pathname;
-  var curUser=null, isAdmin=false, replyTo=null, allComments=[], folded=true;
+  var curUser=null, isAdmin=false, replyTo=null, allComments=[], folded=true, mainSortMode='hot';
   var COLORS=['#667eea','#764ba2','#e74c3c','#2ecc71','#f39c12','#1abc9c','#e91e63','#9b59b6','#3498db','#e67e22'];
   function hc(s){var h=0;for(var i=0;i<s.length;i++){h=s.charCodeAt(i)+((h<<5)-h);}return COLORS[Math.abs(h)%COLORS.length];}
 
@@ -220,21 +229,33 @@
     }).catch(function(){document.getElementById('cmtList').innerHTML='<div class="cmt-empty"><p>\u8bc4\u8bba\u52a0\u8f7d\u5931\u8d25</p></div>';});
   }
 
+  function getKids(){
+    var kids={};
+    allComments.forEach(function(c){if(c.parent_id){if(!kids[c.parent_id])kids[c.parent_id]=[];kids[c.parent_id].push(c);}});
+    return kids;
+  }
+
   function renderList(){
     var el=document.getElementById('cmtList');
+    document.getElementById('cmtDetail').style.display='none';
+    el.style.display='';
     if(!allComments.length){el.innerHTML='<div class="cmt-empty"><div class="cmt-empty-icon">\uD83D\uDCAC</div><p>\u6682\u65e0\u8bc4\u8bba\uff0c\u6765\u8bf4\u4e24\u53e5\u5427</p></div>';return;}
-    var roots=[], kids={};
-    allComments.forEach(function(c){if(c.parent_id){if(!kids[c.parent_id])kids[c.parent_id]=[];kids[c.parent_id].push(c);}else roots.push(c);});
-    var sorted=roots.slice().sort(function(a,b){return(b.likes||0)-(a.likes||0);});
+    var roots=[], kids=getKids();
+    allComments.forEach(function(c){if(!c.parent_id) roots.push(c);});
+    var sorted;
+    if(mainSortMode==='time') sorted=roots.slice().sort(function(a,b){return Number(b.created_at)-Number(a.created_at);});
+    else sorted=roots.slice().sort(function(a,b){return(b.likes||0)-(a.likes||0);});
     var show=folded&&sorted.length>3?sorted.slice(0,3):sorted;
     var h='';
     show.forEach(function(c){h+=renderC(c,kids);});
     if(folded&&sorted.length>3) h+='<button class="cmt-more" onclick="expandCmts()">\u5c55\u5f00\u5168\u90e8 '+sorted.length+' \u6761\u8bc4\u8bba</button>';
     else if(!folded&&sorted.length>3) h+='<button class="cmt-more" onclick="foldCmts()">\u6536\u8d77\u8bc4\u8bba</button>';
     el.innerHTML=h;
+    document.getElementById('cmtMainSort').textContent='\u2630 '+(mainSortMode==='hot'?'\u6309\u70ed\u5ea6':'\u6309\u65f6\u95f4');
   }
   window.expandCmts=function(){folded=false;renderList();};
   window.foldCmts=function(){folded=true;renderList();};
+  window.toggleMainSort=function(){mainSortMode=mainSortMode==='hot'?'time':'hot';renderList();};
 
   function fmtTime(ts){
     var d=new Date(Number(ts));
@@ -257,15 +278,18 @@
       var top=hotSorted[0];
       var topLk=top.likes||0;
       html+='<div class="c-replies">';
-      html+='<div class="c-reply-preview"><span class="c-rp-name">'+esc(top.user_name)+':</span>'+esc(top.content)+(topLk?'<span class="c-rp-like">\uD83D\uDC4D '+topLk+'</span>':'')+'</div>';
-      html+='<div class="c-reply-header"><button class="c-reply-expand" onclick="toggleReplies(\''+c.id+'\')">\u76f8\u5173\u56de\u590d\u5171'+replies.length+'\u6761 ></button><div class="c-sort-btns"><button class="c-sort-btn" onclick="sortReplies(\''+c.id+'\',\'time\')">\u6309\u65f6\u95f4</button><button class="c-sort-btn active" onclick="sortReplies(\''+c.id+'\',\'hot\')">\u6309\u70ed\u5ea6</button></div></div>';
-      html+='<div class="c-reply-list" id="replies-'+c.id+'" style="display:none" data-cid="'+c.id+'">';
-      hotSorted.forEach(function(r){html+=renderReply(r);});
-      html+='</div>';
+      html+='<div class="c-reply-preview"><span class="c-rp-name">'+esc(top.user_name)+':</span>'+fmtReplyContent(top.content)+(topLk?'<span class="c-rp-like">\uD83D\uDC4D '+topLk+'</span>':'')+'</div>';
+      html+='<button class="c-reply-expand" onclick="openDetail(\''+c.id+'\')">\u76f8\u5173\u56de\u590d\u5171'+replies.length+'\u6761 ></button>';
       html+='</div>';
     }
     html+='</div></div>';
     return html;
+  }
+
+  function fmtReplyContent(content){
+    var m=content.match(/^\u56de\u590d @([^：:]+)[：:]\s*/);
+    if(m) return '<span class="c-reply-to">\u56de\u590d @'+esc(m[1])+'</span>'+esc(content.substring(m[0].length));
+    return esc(content);
   }
 
   function renderReply(c){
@@ -276,27 +300,45 @@
     var replyH=curUser?'<button class="c-btn" onclick="replyTo(\''+c.id+'\',\''+esc(c.user_name)+'\')">\u56de\u590d</button>':'';
     var delH=isAdmin?'<button class="c-btn del" onclick="delCmt(\''+c.id+'\')">\u5220\u9664</button>':'';
     var likeH='<button class="c-btn'+(liked?' liked':'')+'" onclick="likeCmt(\''+c.id+'\')">'+'\uD83D\uDC4D'+(lk?' '+lk:'')+'</button>';
-    return '<div class="c-item"><span class="c-avatar" style="background:'+col+'">'+esc(ini)+'</span><div class="c-body"><div class="c-meta"><span class="c-name">'+esc(c.user_name)+'</span></div><div class="c-text">'+esc(c.content)+'</div><div class="c-actions"><span class="c-time">'+ts+'</span>'+replyH+'<div class="c-actions-right">'+likeH+delH+'</div></div></div></div>';
+    var textH=fmtReplyContent(c.content);
+    return '<div class="c-item"><span class="c-avatar" style="background:'+col+'">'+esc(ini)+'</span><div class="c-body"><div class="c-meta"><span class="c-name">'+esc(c.user_name)+'</span></div><div class="c-text">'+textH+'</div><div class="c-actions"><span class="c-time">'+ts+'</span>'+replyH+'<div class="c-actions-right">'+likeH+delH+'</div></div></div></div>';
   }
 
-  window.toggleReplies=function(id){
-    var el=document.getElementById('replies-'+id);
-    if(!el) return;
-    el.style.display=el.style.display==='none'?'':'none';
+  var detailSortMode='hot';
+  window.openDetail=function(parentId){
+    detailSortMode='hot';
+    var el=document.getElementById('cmtDetail');
+    document.getElementById('cmtList').style.display='none';
+    el.style.display='';
+    renderDetail(parentId);
+  };
+  window.closeDetail=function(){
+    renderList();
   };
 
-  window.sortReplies=function(parentId,mode){
-    var el=document.getElementById('replies-'+parentId);
-    if(!el) return;
-    var reps=[];
-    allComments.forEach(function(c){if(c.parent_id===parentId) reps.push(c);});
-    if(mode==='time') reps.sort(function(a,b){return Number(a.created_at)-Number(b.created_at);});
-    else reps.sort(function(a,b){return(b.likes||0)-(a.likes||0);});
-    var h=''; reps.forEach(function(r){h+=renderReply(r);}); el.innerHTML=h;
-    var btns=el.parentNode.querySelectorAll('.c-sort-btn');
-    btns.forEach(function(b){b.classList.remove('active');});
-    if(mode==='time'&&btns[0]) btns[0].classList.add('active');
-    else if(btns[1]) btns[1].classList.add('active');
+  function renderDetail(parentId){
+    var el=document.getElementById('cmtDetail');
+    var parent=null;
+    allComments.forEach(function(c){if(c.id===parentId) parent=c;});
+    if(!parent){el.innerHTML='';return;}
+    var kids=getKids();
+    var h='<div class="cmt-detail-header"><span class="cmt-detail-title">\u8bc4\u8bba\u8be6\u60c5</span><button class="cmt-detail-close" onclick="closeDetail()">\u2715</button></div>';
+    h+=renderC(parent,{});
+    var replies=kids[parentId]||[];
+    var sorted;
+    if(detailSortMode==='time') sorted=replies.slice().sort(function(a,b){return Number(a.created_at)-Number(b.created_at);});
+    else sorted=replies.slice().sort(function(a,b){return(b.likes||0)-(a.likes||0);});
+    var sortLabel=detailSortMode==='hot'?'\u6309\u70ed\u5ea6':'\u6309\u65f6\u95f4';
+    h+='<div class="cmt-detail-replies-header"><span>\u76f8\u5173\u56de\u590d\u5171'+replies.length+'\u6761</span><button class="cmt-sort-toggle" onclick="toggleDetailSort(\''+parentId+'\')">\u2630 '+sortLabel+'</button></div>';
+    h+='<div class="c-reply-list">';
+    sorted.forEach(function(r){h+=renderReply(r);});
+    h+='</div>';
+    el.innerHTML=h;
+  }
+
+  window.toggleDetailSort=function(parentId){
+    detailSortMode=detailSortMode==='hot'?'time':'hot';
+    renderDetail(parentId);
   };
 
   function pad(n){return n<10?'0'+n:''+n;}
@@ -306,6 +348,7 @@
   function submitCmt(){
     var input=document.getElementById('cmtInput'), content=input.value.trim();
     if(!content) return;
+    if(replyTargetName) content='\u56de\u590d @'+replyTargetName+'\uff1a'+content;
     var btn=document.getElementById('cmtSend');
     btn.disabled=true; btn.textContent='\u53d1\u9001\u4e2d...';
     postAPI('/api/comments',{url:pageUrl,content:content,parent_id:replyTo||''}).then(function(d){
@@ -318,8 +361,18 @@
   window.delCmt=function(id){if(!confirm('\u786e\u5b9a\u5220\u9664\uff1f'))return;postAPI('/api/comments/delete',{id:id}).then(function(d){if(d.ok)loadCmts();else showAlert(d.error||'\u5220\u9664\u5931\u8d25');});};
   window.likeCmt=function(id){postAPI('/api/comments/like',{id:id}).then(function(d){if(d.ok)loadCmts();else if(d.error)showAlert(d.error);});};
 
+  var replyTargetName=null;
+  function findRootParent(id){
+    var c=null;
+    allComments.forEach(function(x){if(x.id===id)c=x;});
+    if(c&&c.parent_id) return findRootParent(c.parent_id);
+    return id;
+  }
   window.replyTo=function(id,name){
-    replyTo=id;
+    var rootId=findRootParent(id);
+    var isReplyToReply=rootId!==id;
+    replyTo=rootId;
+    replyTargetName=isReplyToReply?name:null;
     var f=document.getElementById('cmtForm');
     if(!f.classList.contains('show')) f.classList.add('show');
     var input=document.getElementById('cmtInput');
@@ -330,7 +383,7 @@
     tag.innerHTML='\u56de\u590d <b>'+esc(name)+'</b> <button onclick="cancelReply()">\u2715</button>';
     input.parentNode.insertBefore(tag,input);
   };
-  window.cancelReply=function(){replyTo=null;document.getElementById('cmtInput').placeholder='\u5199\u4e0b\u4f60\u7684\u8bc4\u8bba...';var ex=document.getElementById('replyTag');if(ex)ex.remove();};
+  window.cancelReply=function(){replyTo=null;replyTargetName=null;document.getElementById('cmtInput').placeholder='\u5199\u4e0b\u4f60\u7684\u8bc4\u8bba...';var ex=document.getElementById('replyTag');if(ex)ex.remove();};
   function showAlert(msg){var el=document.getElementById('cmtAlert');el.textContent=msg;el.className='cmt-alert cmt-alert-error';el.style.display='block';setTimeout(function(){el.style.display='none';},3000);}
 })();
 </script>
