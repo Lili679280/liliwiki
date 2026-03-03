@@ -1,23 +1,27 @@
 /*
- * Global Typography Reset
- * The default Stack theme font sizes are too large.
- * This overrides the CSS variables to provide a more standard, smaller typography.
+ * Global Typography & Layout Reset
+ * 统一缩小整个博客的字号和图标大小，符合中文阅读标准排版
  */
 
 :root {
+    /* 标准正文字号 1.4rem(14px) ~ 1.5rem(15px) */
     --article-font-size: 1.4rem;
     
     @include respond(md) {
         --article-font-size: 1.5rem;
     }
+
+    /* 正文行高 */
+    --article-line-height: 1.75;
 }
 
-/* Global resets for base body text */
+/* 1. 基础网页字号重置 */
 body {
     font-size: 1.4rem;
 }
 
-/* Override article component sizes directly as they don't use variables for all headings */
+/* 2. 覆盖各个模块的标题大小 */
+/* 文章详情页大标题 */
 .article-title {
     font-size: 1.8rem !important;
 
@@ -30,44 +34,106 @@ body {
     }
 }
 
-.article-content {
-    h1 { font-size: 1.8rem !important; }
-    h2 { font-size: 1.6rem !important; }
-    h3 { font-size: 1.5rem !important; }
-    h4 { font-size: 1.4rem !important; }
-    h5 { font-size: 1.3rem !important; }
-    h6 { font-size: 1.2rem !important; }
-}
-
-/* Sidebar and meta info text */
+/* 侧边栏/小组件标题 */
 .section-title {
     font-size: 1.4rem !important;
 }
 
-.article-time,
-.article-translations,
-.article-header-tags {
-    time, a {
-        font-size: 1.2rem !important;
+/* 首页/列表页的文章标题 */
+.article-list article .article-title {
+    font-size: 1.8rem !important;
+    @include respond(xl) {
+        font-size: 2.0rem !important;
     }
 }
-
-.article-category a,
-.article-tags a {
-    font-size: 1.2rem !important;
-    padding: 6px 12px !important;
-}
-
-/* Article lists */
 .article-list--compact article .article-title {
     font-size: 1.5rem !important;
-    
     @include respond(md) {
         font-size: 1.6rem !important;
     }
 }
 
+/* 文章列表描述/时间信息 */
+.article-subtitle {
+    font-size: 1.4rem !important;
+    @include respond(xl) {
+        font-size: 1.5rem !important;
+    }
+}
 .article-list--compact article .article-time,
 .article-list--compact article .article-preview {
     font-size: 1.3rem !important;
+}
+
+/* 文章内部(Markdown) 各级标题大小 (h1-h6) */
+.article-content {
+    h1 { font-size: 1.8rem !important; }
+    h2 { font-size: 1.65rem !important; }
+    h3 { font-size: 1.55rem !important; }
+    h4 { font-size: 1.45rem !important; }
+    h5 { font-size: 1.35rem !important; }
+    h6 { font-size: 1.25rem !important; }
+    
+    p { margin: 1.2em 0 !important; }
+    
+    /* 引用块文字缩小，且边距变小 */
+    blockquote {
+        margin: 1.2em 0 !important;
+        font-size: 0.95em !important; 
+    }
+}
+
+/* 文章时间、标签等元信息 */
+.article-time,
+.article-translations,
+.article-header-tags,
+.article-footer section {
+    font-size: 1.3rem !important;
+    
+    time, a {
+        font-size: 1.3rem !important;
+    }
+}
+
+.article-category a,
+.article-tags a {
+    font-size: 1.25rem !important;
+    padding: 4px 10px !important;
+}
+
+/* ==================================================== */
+/* 3. 图标(SVG) 大小统一缩放优化 */
+/* ==================================================== */
+
+/* 菜单图标 (原 24px -> 18px) */
+.menu svg {
+    width: 18px !important;
+    height: 18px !important;
+}
+
+/* 文章信息元数据图标 (时间、标签等，原 20px -> 16px) */
+.article-time svg,
+.article-translations svg,
+.article-header-tags svg,
+.article-footer section svg {
+    width: 16px !important;
+    height: 16px !important;
+}
+
+/* 侧边栏/社交小组件图标 (原 32px -> 22px) */
+.widget svg {
+    width: 22px !important;
+    height: 22px !important;
+}
+
+/* 分页器图标 (原 20px -> 16px) */
+.pagination svg {
+    width: 16px !important;
+    height: 16px !important;
+}
+
+/* 目录(TOC)图标 (原 20px -> 16px) */
+.article-toc details summary .article-toc-title svg {
+    width: 16px !important;
+    height: 16px !important;
 }
