@@ -3,6 +3,15 @@
  * 统一缩小整个博客的字号和图标大小，符合中文阅读标准排版
  */
 
+/* Fix Android blue tap highlight rectangles */
+*, *::before, *::after {
+    -webkit-tap-highlight-color: transparent !important;
+}
+a, button, select, input, textarea, [onclick], [role="button"] {
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-touch-callout: none;
+}
+
 :root {
     /* 标准正文字号 1.4rem(14px) ~ 1.5rem(15px) */
     --article-font-size: 1.4rem;
