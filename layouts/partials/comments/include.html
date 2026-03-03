@@ -25,7 +25,8 @@
 .cmt-form{display:none;margin-top:1.5rem;position:relative}
 .cmt-form.show{display:block;animation:cmtSlide .25s ease}
 @keyframes cmtSlide{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
-.cmt-form-close{position:absolute;top:.2rem;right:.2rem;background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--card-text-color-tertiary,#999);padding:.3rem .5rem;border-radius:4px;transition:all .15s;line-height:1;z-index:1}
+.cmt-form-top{display:flex;justify-content:flex-end;margin-bottom:.4rem}
+.cmt-form-close{background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--card-text-color-tertiary,#999);padding:.3rem .6rem;border-radius:4px;transition:all .15s;line-height:1}
 .cmt-form-close:hover{color:var(--card-text-color-main);background:var(--body-background,#f0f0f0)}
 .cmt-field-wrap{position:relative;margin-bottom:0}
 .cmt-field-wrap .cmt-float-label{position:absolute;left:1.4rem;top:1.2rem;font-size:1.4rem;color:var(--card-text-color-tertiary,#999);pointer-events:none;transition:all .2s cubic-bezier(.4,0,.2,1);transform-origin:left top;background:transparent;padding:0 .4rem}
@@ -88,10 +89,15 @@
 .cmt-detail .c-reply-list .c-actions{font-size:1.1rem;gap:1.2rem}
 .emoji-trigger{background:none;border:none;font-size:1.6rem;cursor:pointer;padding:.3rem;border-radius:4px;transition:background .1s;line-height:1}
 .emoji-trigger:hover{background:var(--body-background,#f0f0f0)}
-.emoji-panel{display:none;flex-wrap:wrap;gap:.3rem;padding:.8rem;background:var(--card-background,#fff);border:1px solid var(--card-separator-color,#e0e0e0);border-radius:8px;margin-top:.6rem;max-height:160px;overflow-y:auto}
-.emoji-panel.show{display:flex}
-.emoji-panel button{background:none;border:none;font-size:1.8rem;cursor:pointer;padding:.3rem .4rem;border-radius:4px;transition:background .1s;line-height:1}
-.emoji-panel button:hover{background:var(--body-background,#f0f0f0)}
+.emoji-panel{display:none;background:var(--card-background,#fff);border:1px solid var(--card-separator-color,#e0e0e0);border-radius:10px;margin-top:.6rem;overflow:hidden}
+.emoji-panel.show{display:block}
+.emoji-tabs{display:flex;gap:0;border-bottom:1px solid var(--card-separator-color,#e0e0e0);overflow-x:auto;padding:0 .4rem}
+.emoji-tab{background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;font-size:1.5rem;padding:.5rem .7rem;transition:all .15s;flex-shrink:0}
+.emoji-tab:hover{background:var(--body-background,#f0f0f0)}
+.emoji-tab.active{border-bottom-color:var(--accent-color,#667eea)}
+.emoji-grid{display:flex;flex-wrap:wrap;gap:.2rem;padding:.6rem;max-height:140px;overflow-y:auto}
+.emoji-grid button{background:none;border:none;font-size:1.7rem;cursor:pointer;padding:.25rem .35rem;border-radius:4px;transition:background .1s;line-height:1}
+.emoji-grid button:hover{background:var(--body-background,#f0f0f0)}
 .cmt-more{background:none;border:1px dashed var(--card-separator-color,#ddd);padding:1rem;border-radius:8px;width:100%;font-size:1.3rem;color:var(--card-text-color-tertiary);cursor:pointer;margin-top:1.2rem;transition:all .15s}
 .cmt-more:hover{border-color:var(--accent-color,#667eea);color:var(--accent-color,#667eea)}
 </style>
@@ -108,7 +114,7 @@
     </div>
 
     <div class="cmt-form" id="cmtForm">
-      <button type="button" class="cmt-form-close" id="cmtFormClose" onclick="toggleForm()">✕</button>
+      <div class="cmt-form-top"><button type="button" class="cmt-form-close" onclick="toggleForm()">✕</button></div>
       <div class="cmt-field-wrap">
         <textarea id="cmtInput" class="cmt-textarea" maxlength="1000" rows="1"></textarea>
         <label class="cmt-float-label" for="cmtInput">说点什么...</label>
@@ -221,10 +227,28 @@
   cmtInput.addEventListener('blur',function(){if(!this.value){this.style.height='';}});
   document.getElementById('cmtSend').addEventListener('click',submitCmt);
 
-  // === Emoji picker ===
-  var EMOJIS='😀,😃,😄,😁,😆,😅,😂,🤣,�,😇,🙂,🙃,😉,😌,��,🥰,😘,😗,😚,😙,🥲,🤗,�,😎,🤩,🥳,�,😒,😞,😔,😟,😕,🙁,😣,😖,😫,😩,🥺,��,😭,😤,�,🤬,🤯,😳,🥵,🥶,��,😨,😰,😥,🤔,🤫,🤥,😶,�,😑,🙄,😬,🥱,😴,🤤,😋,😝,🤢,🤮,🤧,🥴,🥸,😷,🤠,🤡,👻,👽,🤖,💩,👍,👎,👊,✊,✌️,🤞,🤟,🤘,�,👏,�,🙏,�,❤️,�,�,�,�,💜,�,�,❣️,�,✨,🌟,💫,�,☀️,🌙,⭐,🎉,🎊,🏆,🎖️,💯,🚀,✈️,🌍,🌸,��,🌺,🌷,🍀,🍃,🍂,☕,�,🍺,��,�,🍰,��,�,🍩,🍕,🍔,🍜,🍣,🍞,🥐,🐶,🐱,🐭,🐹,🐰,🦊,🐻,🐼,🐨,🐯,🦁,🐷,🐸,🐵,🐒,🐧,🦅,🦉,🐾,🎵,🎶,🎤,🎬,📷,📱,💻,📚,✍️,💡,🔔,📣,✅,❌,❗,❓,🚫,♻️'.split(',');
+  // === Emoji picker (categorized) ===
+  var EMOJI_CATS=[
+    {icon:'😀',name:'笑脸',list:['�','�😃','😄','😁','😆','😅','😂','🤣','😊','😇','🙂','🙃','😉','😌','😍','😘','😗','😚','😙','😋','😛','😜','�','�','�','🤔','🤐','�','�','�','�','�','�','�','�','�','�','�','�','�','😨','😰','😥','😢','😭','😤','😡','�','�','👿','�','�','�','�','�','�','�','🤒','🤕','🤢','🤮','�','�','�','�','�','�']},
+    {icon:'�',name:'手势',list:['👍','👎','👊','✊','🤛','🤜','👏','🙌','👐','🤲','🤝','🙏','💪','🤞','✌️','🤟','🤘','👌','�','👉','�','👇','☝️','✋','🤚','🖐️','🖖','�','🤙','✍️','👀','👁️','👄','�']},
+    {icon:'❤️',name:'符号',list:['❤️','🧡','💛','💚','💙','💜','🖤','💔','❣️','�','�','💓','💗','💖','💘','💝','✨','�','💫','🔥','💯','💢','💥','💦','💨','🕊️','✅','❌','❗','❓','💡','🔔','📣','�','�','🚀']},
+    {icon:'🐶',name:'动物',list:['🐶','🐱','🐭','🐹','🐰','🦊','🐻','🐼','🐨','🐯','🦁','🐮','🐷','🐸','🐵','🙈','🙉','🙊','🐒','🐔','🐧','🐦','🐤','🦆','🦅','🦉','🐺','🐗','🐴','🐝','🐛','🦋','🐌','🐞','🐜','🐾']},
+    {icon:'�',name:'食物',list:['🍎','🍊','🍋','🍌','🍉','🍇','🍓','🍑','🍒','🥝','🍅','🥑','🍕','🍔','🍟','🌭','🍿','🍜','🍣','🍱','🍛','🍝','🍰','🎂','🍩','🍪','🍫','🍬','🍭','☕','🍵','🍺','🍻','🥤','🍷']},
+    {icon:'⚽',name:'活动',list:['⚽','🏀','🏈','🎾','🏐','🎱','🏓','🏸','🎯','🎮','🕹️','🎲','🧩','🎭','🎨','🎬','🎤','🎧','�🎵','🎶','🎹','�','�','🏆','🥇','🥈','🥉','🎖️','🏅','🎪','🎉','🎊','🎈','🎁','📷','�','💻','📚']}
+  ];
   var emojiPanel=document.getElementById('emojiPanel');
-  emojiPanel.innerHTML=EMOJIS.map(function(e){return '<button type="button" onclick="insertEmoji(\''+e+'\')">' +e+'</button>';}).join('');
+  var emojiCurCat=0;
+  function renderEmojiPanel(){
+    var tabs='<div class="emoji-tabs">';
+    EMOJI_CATS.forEach(function(cat,i){tabs+='<button class="emoji-tab'+(i===emojiCurCat?' active':'')+'" onclick="switchEmojiCat('+i+')">'+cat.icon+'</button>';});
+    tabs+='</div>';
+    var grid='<div class="emoji-grid">';
+    EMOJI_CATS[emojiCurCat].list.forEach(function(e){grid+='<button type="button" onclick="insertEmoji(\''+e+'\')">'+e+'</button>';});
+    grid+='</div>';
+    emojiPanel.innerHTML=tabs+grid;
+  }
+  window.switchEmojiCat=function(i){emojiCurCat=i;renderEmojiPanel();};
+  renderEmojiPanel();
   document.getElementById('emojiBtn').addEventListener('click',function(ev){ev.stopPropagation();emojiPanel.classList.toggle('show');});
   document.addEventListener('click',function(e){if(!e.target.closest('#emojiPanel')&&!e.target.closest('#emojiBtn')){emojiPanel.classList.remove('show');}});
   window.insertEmoji=function(emoji){
