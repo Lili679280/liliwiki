@@ -99,7 +99,6 @@
     <div id="cmtActions">
       <button class="cmt-write-btn" id="cmtWriteBtn" style="display:none" onclick="toggleForm()">✏️ 写评论</button>
       <a class="cmt-login-link" id="cmtLoginLink" style="display:none">🔑 登录后评论</a>
-      <button class="cmt-sort-toggle" id="cmtMainSort" onclick="toggleMainSort()">☰ 按热度</button>
     </div>
 
     <div class="cmt-form" id="cmtForm">
@@ -116,6 +115,9 @@
       <div id="cmtAlert" class="cmt-alert" style="display:none"></div>
     </div>
 
+    <div class="cmt-sort-bar">
+      <button class="cmt-sort-toggle" id="cmtMainSort" onclick="toggleMainSort()">☰ 按热度</button>
+    </div>
     <div id="cmtList" class="cmt-list"><div class="cmt-loading">加载中...</div></div>
     <div id="cmtDetail" class="cmt-detail" style="display:none"></div>
   </div>
@@ -171,7 +173,7 @@
   if(sT) sT.href='https://twitter.com/intent/tweet?text='+et+'&url='+eu;
   if(sW) sW.href='https://service.weibo.com/share/share.php?title='+et+'&url='+eu;
   if(sQ) sQ.href='https://connect.qq.com/widget/shareqq/index.html?title='+et+'&url='+eu;
-  window.toggleShare=function(){var d=document.getElementById('shareDD');if(!d)return;var isMobile=window.innerWidth<=768;if(isMobile){var btn=d.parentElement.querySelector('.share-trigger');if(btn){var r=btn.getBoundingClientRect();d.classList.toggle('show');if(d.classList.contains('show')){d.classList.add('mobile-pos');d.style.top=(r.bottom+8)+'px';}else{d.classList.remove('mobile-pos');d.style.top='';}}else{d.classList.toggle('show');}}else{d.classList.toggle('show');}};
+  window.toggleShare=function(){var d=document.getElementById('shareDD');if(!d)return;var isMobile=window.innerWidth<=768;if(isMobile){var btn=d.parentElement.querySelector('.share-trigger');if(btn){var r=btn.getBoundingClientRect();if(!d.classList.contains('show')){d.classList.add('mobile-pos');d.style.top=(r.bottom+8)+'px';d.classList.add('show');}else{d.classList.remove('show');d.classList.remove('mobile-pos');d.style.top='';}}else{d.classList.toggle('show');}}else{d.classList.toggle('show');}};
   document.addEventListener('click',function(e){if(!e.target.closest('.share-wrap')){var d=document.getElementById('shareDD');if(d)d.classList.remove('show');}});
   var cb=document.getElementById('sCopy');
   if(cb) cb.onclick=function(e){e.stopPropagation();var b=this;navigator.clipboard.writeText(window.location.href).then(function(){b.textContent='\u2713 \u5df2\u590d\u5236';setTimeout(function(){b.textContent='\uD83D\uDD17 \u590d\u5236\u94fe\u63a5';},2000);});};
@@ -311,11 +313,13 @@
     var el=document.getElementById('cmtDetail');
     document.getElementById('cmtList').style.display='none';
     document.getElementById('cmtActions').style.display='none';
+    document.querySelector('.cmt-sort-bar').style.display='none';
     el.style.display='';
     renderDetail();
   };
   window.closeDetail=function(){
     document.getElementById('cmtActions').style.display='';
+    document.querySelector('.cmt-sort-bar').style.display='';
     currentDetailId=null;
     renderList();
   };
