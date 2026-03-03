@@ -8,8 +8,6 @@
 .share-dd{display:none;position:absolute;top:50%;right:calc(100% + 8px);transform:translateY(-50%);background:var(--card-background,#fff);border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.15);padding:.5rem;z-index:100;border:1px solid var(--card-separator-color,#eee);flex-direction:row;gap:.3rem}
 .share-dd.show{display:flex;animation:sdLeft .15s ease}
 @keyframes sdLeft{from{opacity:0;transform:translateY(-50%) translateX(6px)}to{opacity:1;transform:translateY(-50%) translateX(0)}}
-@media(max-width:768px){.share-dd.show{animation:none}.share-dd.mobile-pos{position:fixed;top:auto;right:auto;left:50%;transform:translateX(-50%);flex-direction:row}.share-dd.mobile-pos.show{animation:sdDown .15s ease}}
-@keyframes sdDown{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
 .share-dd a,.share-dd button{display:flex;align-items:center;gap:.5rem;padding:.5rem .8rem;border:none;background:none;border-radius:6px;font-size:1.3rem;color:var(--card-text-color-main,#333);text-decoration:none;cursor:pointer;transition:background .1s;white-space:nowrap}
 .share-dd a:hover,.share-dd button:hover{background:var(--body-background,#f5f5f5)}
 
@@ -173,7 +171,7 @@
   if(sT) sT.href='https://twitter.com/intent/tweet?text='+et+'&url='+eu;
   if(sW) sW.href='https://service.weibo.com/share/share.php?title='+et+'&url='+eu;
   if(sQ) sQ.href='https://connect.qq.com/widget/shareqq/index.html?title='+et+'&url='+eu;
-  window.toggleShare=function(){var d=document.getElementById('shareDD');if(!d)return;var isMobile=window.innerWidth<=768;if(isMobile){var btn=d.parentElement.querySelector('.share-trigger');if(btn){var r=btn.getBoundingClientRect();if(!d.classList.contains('show')){d.classList.add('mobile-pos');d.style.top=(r.bottom+8)+'px';d.classList.add('show');}else{d.classList.remove('show');d.classList.remove('mobile-pos');d.style.top='';}}else{d.classList.toggle('show');}}else{d.classList.toggle('show');}};
+  window.toggleShare=function(){var d=document.getElementById('shareDD');if(!d)return;var isMobile=window.innerWidth<=768;if(isMobile){var btn=d.parentElement.querySelector('.share-trigger');if(btn){var r=btn.getBoundingClientRect();if(!d.classList.contains('show')){d.style.cssText='display:flex;position:fixed;top:'+(r.bottom+8)+'px;left:50%;transform:translateX(-50%);right:auto;animation:none;flex-direction:row';d.classList.add('show');}else{d.classList.remove('show');d.style.cssText='';}}else{d.classList.toggle('show');}}else{d.classList.toggle('show');}};
   document.addEventListener('click',function(e){if(!e.target.closest('.share-wrap')){var d=document.getElementById('shareDD');if(d)d.classList.remove('show');}});
   var cb=document.getElementById('sCopy');
   if(cb) cb.onclick=function(e){e.stopPropagation();var b=this;navigator.clipboard.writeText(window.location.href).then(function(){b.textContent='\u2713 \u5df2\u590d\u5236';setTimeout(function(){b.textContent='\uD83D\uDD17 \u590d\u5236\u94fe\u63a5';},2000);});};
