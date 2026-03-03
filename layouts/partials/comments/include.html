@@ -465,7 +465,7 @@
   window.closeReport=function(){var m=document.getElementById('reportModal');if(m)m.classList.remove('show');};
   window.submitReport=function(reason){
     closeReport();
-    postAPI('/api/report',{type:reportType,targetId:reportTargetId,reason:reason}).then(function(d){
+    postAPI('/api/report',{type:reportType,targetId:reportTargetId,reason:reason,pageUrl:window.location.href}).then(function(d){
       if(d.ok){var t=document.createElement('div');t.className='report-toast';t.textContent=d.message||'\u4e3e\u62a5\u5df2\u63d0\u4ea4';document.body.appendChild(t);setTimeout(function(){t.remove();},2500);}
       else{showAlert(d.error||'\u4e3e\u62a5\u5931\u8d25');}
     }).catch(function(){showAlert('\u7f51\u7edc\u9519\u8bef');});
