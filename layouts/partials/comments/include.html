@@ -25,7 +25,8 @@
 .cmt-form{display:none;margin-top:1.5rem;position:relative}
 .cmt-form.show{display:block;animation:cmtSlide .25s ease}
 @keyframes cmtSlide{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
-.cmt-form-top{display:flex;justify-content:flex-end;margin-bottom:.4rem}
+.cmt-form-top{display:flex;justify-content:flex-end;align-items:center;margin-bottom:.4rem}
+.cmt-form-top .reply-tag{margin-bottom:0;margin-right:auto}
 .cmt-form-close{background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--card-text-color-tertiary,#999);padding:.3rem .6rem;border-radius:4px;transition:all .15s;line-height:1}
 .cmt-form-close:hover{color:var(--card-text-color-main);background:var(--body-background,#f0f0f0)}
 .cmt-field-wrap{position:relative;margin-bottom:0}
@@ -229,12 +230,12 @@
 
   // === Emoji picker (categorized) ===
   var EMOJI_CATS=[
-    {icon:'😀',name:'笑脸',list:['�','�😃','😄','😁','😆','😅','😂','🤣','😊','😇','🙂','🙃','😉','😌','😍','😘','😗','😚','😙','😋','😛','😜','�','�','�','🤔','🤐','�','�','�','�','�','�','�','�','�','�','�','�','�','😨','😰','😥','😢','😭','😤','😡','�','�','👿','�','�','�','�','�','�','�','🤒','🤕','🤢','🤮','�','�','�','�','�','�']},
-    {icon:'�',name:'手势',list:['👍','👎','👊','✊','🤛','🤜','👏','🙌','👐','🤲','🤝','🙏','💪','🤞','✌️','🤟','🤘','👌','�','👉','�','👇','☝️','✋','🤚','🖐️','🖖','�','🤙','✍️','👀','👁️','👄','�']},
-    {icon:'❤️',name:'符号',list:['❤️','🧡','💛','💚','💙','💜','🖤','💔','❣️','�','�','💓','💗','💖','💘','💝','✨','�','💫','🔥','💯','💢','💥','💦','💨','🕊️','✅','❌','❗','❓','💡','🔔','📣','�','�','🚀']},
-    {icon:'🐶',name:'动物',list:['🐶','🐱','🐭','🐹','🐰','🦊','🐻','🐼','🐨','🐯','🦁','🐮','🐷','🐸','🐵','🙈','🙉','🙊','🐒','🐔','🐧','🐦','🐤','🦆','🦅','🦉','🐺','🐗','🐴','🐝','🐛','🦋','🐌','🐞','🐜','🐾']},
-    {icon:'�',name:'食物',list:['🍎','🍊','🍋','🍌','🍉','🍇','🍓','🍑','🍒','🥝','🍅','🥑','🍕','🍔','🍟','🌭','🍿','🍜','🍣','🍱','🍛','🍝','🍰','🎂','🍩','🍪','🍫','🍬','🍭','☕','🍵','🍺','🍻','🥤','🍷']},
-    {icon:'⚽',name:'活动',list:['⚽','🏀','🏈','🎾','🏐','🎱','🏓','🏸','🎯','🎮','🕹️','🎲','🧩','🎭','🎨','🎬','🎤','🎧','�🎵','🎶','🎹','�','�','🏆','🥇','🥈','🥉','🎖️','🏅','🎪','🎉','🎊','🎈','🎁','📷','�','💻','📚']}
+    {icon:'😀',name:'笑脸',list:['�','😄','😁','😆','😅','😂','😊','','🙃','😉','','😘','','😙','😋','😛','😜','😏','😒','😞','😔','😢','😭','😩','😤','😡','😱','😨','😰','�','�','�','�','�','😑','😶','�','😴','😌','😝','😮','😯','😦','😧','😓','😕','😣','😖','😫','👻','👽','👿','💩']},
+    {icon:'👍',name:'手势',list:['👍','👎','👊','✊','👏','🙌','👐','🙏','💪','👆','👇','�','👉','✋','�','�','✌','👀']},
+    {icon:'❤',name:'符号',list:['❤','💛','💚','💙','💜','💔','💓','💗','💖','💘','💝','✨','💫','🔥','💯','💢','💥','💦','💨','✅','❌','❗','❓','💡','🔔','📣','🚀','⭐','☀','🌙','🌈']},
+    {icon:'🐶',name:'动物',list:['🐶','🐱','🐭','🐹','🐰','🐻','🐼','🐨','🐯','🐮','🐷','🐸','🐵','🙈','🙉','🙊','🐒','🐔','🐧','🐦','🐤','🐺','🐗','🐴','🐝','🐛','🐌','🐞','🐜','🐾']},
+    {icon:'🍔',name:'食物',list:['🍎','🍊','🍋','🍌','🍉','🍇','🍓','🍑','🍒','🍅','🍕','🍔','🍟','🍜','🍣','🍱','🍛','🍝','🍰','🎂','🍩','🍪','🍫','🍬','🍭','☕','🍵','🍺','🍻','🍷']},
+    {icon:'🎉',name:'活动',list:['⚽','🏀','🎾','🎱','🎯','🎮','🎲','🎬','🎤','🎧','🎵','🎶','🎹','🎸','🏆','�','�','�','�','📷','💻','📚','�','🔨','�','�']}
   ];
   var emojiPanel=document.getElementById('emojiPanel');
   var emojiCurCat=0;
@@ -431,7 +432,7 @@
     var ex=document.getElementById('replyTag');if(ex)ex.remove();
     var tag=document.createElement('div');tag.id='replyTag';tag.className='reply-tag';
     tag.innerHTML='\u56de\u590d <b>'+esc(name)+'</b> <button onclick="cancelReply()">\u2715</button>';
-    var fw=document.querySelector('.cmt-field-wrap');fw.parentNode.insertBefore(tag,fw);
+    var top=document.querySelector('.cmt-form-top');var closeBtn=top.querySelector('.cmt-form-close');top.insertBefore(tag,closeBtn);
   };
   window.cancelReply=function(){replyTo=null;replyTargetName=null;var fl=document.querySelector('.cmt-float-label');if(fl)fl.textContent='\u8bf4\u70b9\u4ec0\u4e48...';var ex=document.getElementById('replyTag');if(ex)ex.remove();};
   function showAlert(msg){var el=document.getElementById('cmtAlert');el.textContent=msg;el.className='cmt-alert cmt-alert-error';el.style.display='block';setTimeout(function(){el.style.display='none';},3000);}
