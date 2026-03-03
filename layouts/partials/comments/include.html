@@ -46,20 +46,28 @@
 .c-item+.c-item{border-top:1px solid var(--card-separator-color,#f0f0f0)}
 .c-avatar{width:40px;height:40px;border-radius:50%;color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:700;flex-shrink:0}
 .c-body{flex:1;min-width:0}
-.c-meta{display:flex;align-items:baseline;gap:.8rem;margin-bottom:.4rem}
+.c-meta{display:flex;align-items:center;gap:.8rem;margin-bottom:.4rem}
 .c-name{font-weight:600;font-size:1.4rem;color:var(--card-text-color-main)}
-.c-time{font-size:1.2rem;color:var(--card-text-color-tertiary);margin-left:auto}
 .c-text{font-size:1.4rem;line-height:1.75;color:var(--card-text-color-main);white-space:pre-wrap;word-break:break-word;margin:.4rem 0 .6rem}
-.c-actions{display:flex;align-items:center;gap:.4rem}
-.c-btn{background:none;border:none;font-size:1.2rem;cursor:pointer;padding:.3rem .8rem;border-radius:4px;transition:all .12s;color:var(--card-text-color-tertiary,#999)}
-.c-btn:hover{color:var(--accent-color,#667eea);background:rgba(102,126,234,.05)}
+.c-actions{display:flex;align-items:center;gap:1.6rem;font-size:1.2rem;color:var(--card-text-color-tertiary,#999)}
+.c-time{font-size:1.2rem;color:var(--card-text-color-tertiary)}
+.c-btn{background:none;border:none;font-size:1.2rem;cursor:pointer;padding:0;transition:all .12s;color:var(--card-text-color-tertiary,#999);display:inline-flex;align-items:center;gap:.3rem}
+.c-btn:hover{color:var(--accent-color,#667eea)}
 .c-btn.liked{color:#e74c3c}
 .c-btn.del:hover{color:#ef4444}
+.c-actions-right{display:flex;align-items:center;gap:.4rem;margin-left:auto}
 .c-replies{margin-left:52px;position:relative}
-.c-replies::before{content:'';position:absolute;left:-26px;top:0;bottom:0;width:1.5px;background:var(--card-separator-color,#e5e5e5)}
-.c-replies .c-item{padding:1.2rem 0}
-.c-replies .c-avatar{width:32px;height:32px;font-size:1.3rem}
-.c-replies .c-text{font-size:1.3rem}
+.c-replies .c-reply-preview{background:var(--body-background,#f5f5f5);border-radius:8px;padding:1rem 1.4rem;margin-top:.6rem;font-size:1.3rem;line-height:1.6;color:var(--card-text-color-main)}
+.c-replies .c-reply-preview .c-rp-name{color:var(--accent-color,#667eea);font-weight:600;margin-right:.4rem}
+.c-replies .c-reply-preview .c-rp-like{font-size:1.1rem;color:var(--card-text-color-tertiary);margin-left:.8rem}
+.c-replies .c-reply-expand{display:inline-flex;align-items:center;gap:.3rem;font-size:1.2rem;color:var(--accent-color,#667eea);cursor:pointer;background:none;border:none;padding:.4rem 0;margin-top:.3rem;font-weight:500}
+.c-replies .c-reply-expand:hover{opacity:.8}
+.c-replies .c-reply-all{display:none;margin-top:.6rem}
+.c-replies .c-reply-all.show{display:block}
+.c-replies .c-reply-all .c-item{padding:1rem 0}
+.c-replies .c-reply-all .c-avatar{width:28px;height:28px;font-size:1.1rem}
+.c-replies .c-reply-all .c-text{font-size:1.3rem}
+.c-replies .c-reply-all .c-actions{font-size:1.1rem;gap:1.2rem}
 .cmt-more{background:none;border:1px dashed var(--card-separator-color,#ddd);padding:1rem;border-radius:8px;width:100%;font-size:1.3rem;color:var(--card-text-color-tertiary);cursor:pointer;margin-top:1.2rem;transition:all .15s}
 .cmt-more:hover{border-color:var(--accent-color,#667eea);color:var(--accent-color,#667eea)}
 </style>
@@ -113,9 +121,9 @@
   shareWrap.innerHTML = 
     '<button class="share-trigger" onclick="toggleShare()">↗ 分享</button>'+
     '<div class="share-dd" id="shareDD">'+
-      '<a id="sTwitter" target="_blank" rel="noopener">𝕏 Twitter</a>'+
-      '<a id="sWeibo" target="_blank" rel="noopener">🔴 微博</a>'+
-      '<a id="sQQ" target="_blank" rel="noopener">🔵 QQ</a>'+
+      '<a id="sTwitter" target="_blank" rel="noopener"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg> Twitter</a>'+
+      '<a id="sWeibo" target="_blank" rel="noopener"><svg width="16" height="16" viewBox="0 0 24 24" fill="#E6162D"><path d="M10.098 20.323c-3.977.391-7.414-1.406-7.672-4.02-.259-2.609 2.759-5.047 6.74-5.441 3.979-.394 7.413 1.404 7.671 4.018.259 2.6-2.759 5.049-6.739 5.443zM9.05 17.219c-.384.616-1.208.884-1.829.602-.612-.279-.793-.991-.406-1.593.379-.595 1.176-.861 1.793-.583.631.283.822.997.442 1.574zm1.27-1.627c-.141.237-.449.353-.689.253-.236-.095-.307-.371-.168-.603.141-.229.437-.348.673-.246.239.09.315.369.184.596zm.176-2.719c-1.893-.493-4.033.45-4.857 2.118-.836 1.704-.026 3.591 1.886 4.21 1.983.642 4.318-.341 5.132-2.179.8-1.793-.201-3.642-2.161-4.149zM17.343 6.065c-.609-1.394-2.066-2.08-3.269-1.544-1.178.525-1.706 1.963-1.182 3.221.033.086.073.163.109.244l-.042.019c-.943.4-2.576 1.426-3.544 3.062-1.123 1.907-.946 3.886.488 5.291 1.467 1.44 4.005 1.907 6.322.935C18.649 16.267 20 13.971 20 11.439c-.003-.939-.161-2.207-.479-3.125-.169-.487-.361-.903-.668-1.28-.048-.056-.081-.138-.13-.194l.08-.037c1.326-.557 1.574-2.071.54-2.738z"/></svg> 微博</a>'+
+      '<a id="sQQ" target="_blank" rel="noopener"><svg width="16" height="16" viewBox="0 0 24 24" fill="#12B7F5"><path d="M12.003 2C6.424 2 3 6.867 3 10.29c0 2.097.65 4.065 1.696 5.776-.263.796-.652 1.584-1.12 2.17-.322.403.05.932.536.79.923-.269 1.927-.734 2.72-1.313A10.27 10.27 0 0012.003 19c5.579 0 9.003-4.867 9.003-8.29C21.006 6.451 17.582 2 12.003 2z"/></svg> QQ</a>'+
       '<button id="sCopy">🔗 复制链接</button>'+
     '</div>';
 
@@ -199,27 +207,55 @@
   window.expandCmts=function(){folded=false;renderList();};
   window.foldCmts=function(){folded=true;renderList();};
 
+  function fmtTime(ts){
+    var d=new Date(Number(ts));
+    if(isNaN(d.getTime())) return '\u672a\u77e5\u65f6\u95f4';
+    return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+' '+pad(d.getHours())+':'+pad(d.getMinutes());
+  }
+
   function renderC(c,kids){
-    // FIX: Convert created_at safely to handle string timestamps preventing NaN bug
-    var d=new Date(Number(c.created_at));
-    var ts='';
-    if(!isNaN(d.getTime())) {
-      ts=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+' '+pad(d.getHours())+':'+pad(d.getMinutes());
-    } else {
-      ts='未知时间';
-    }
-    
+    var ts=fmtTime(c.created_at);
     var ini=(c.user_name||'?')[0].toUpperCase(), col=hc(c.user_name||'?');
     var lk=c.likes||0, lb=[];try{lb=JSON.parse(c.liked_by||'[]');}catch(e){}
     var liked=curUser&&lb.indexOf(curUser.email)!==-1;
-    var likeH='<button class="c-btn'+(liked?' liked':'')+'" onclick="likeCmt(\''+c.id+'\')">'+(liked?'\u2764':'\u2661')+(lk?' '+lk:'')+'</button>';
-    var replyH=curUser?'<button class="c-btn" onclick="replyTo(\''+c.id+'\',\''+esc(c.user_name)+'\')">↩ \u56de\u590d</button>':'';
+    var replyH=curUser?'<button class="c-btn" onclick="replyTo(\''+c.id+'\',\''+esc(c.user_name)+'\')">\u56de\u590d</button>':'';
     var delH=isAdmin?'<button class="c-btn del" onclick="delCmt(\''+c.id+'\')">\u5220\u9664</button>':'';
-    var html='<div class="c-item" id="c-'+c.id+'"><span class="c-avatar" style="background:'+col+'">'+esc(ini)+'</span><div class="c-body"><div class="c-meta"><span class="c-name">'+esc(c.user_name)+'</span><span class="c-time">'+ts+'</span></div><div class="c-text">'+esc(c.content)+'</div><div class="c-actions">'+likeH+replyH+delH+'</div>';
-    if(kids[c.id]&&kids[c.id].length){html+='<div class="c-replies">';kids[c.id].forEach(function(r){html+=renderC(r,kids);});html+='</div>';}
+    var likeH='<button class="c-btn'+(liked?' liked':'')+'" onclick="likeCmt(\''+c.id+'\')">'+(liked?'\u2764\uFE0F':'\uD83D\uDC4D')+(lk?' '+lk:'')+'</button>';
+    var html='<div class="c-item" id="c-'+c.id+'"><span class="c-avatar" style="background:'+col+'">'+esc(ini)+'</span><div class="c-body"><div class="c-meta"><span class="c-name">'+esc(c.user_name)+'</span></div><div class="c-text">'+esc(c.content)+'</div><div class="c-actions"><span class="c-time">'+ts+'</span>'+replyH+'<div class="c-actions-right">'+likeH+delH+'</div></div>';
+    var replies=kids[c.id];
+    if(replies&&replies.length){
+      var sorted=replies.slice().sort(function(a,b){return(b.likes||0)-(a.likes||0);});
+      var top=sorted[0];
+      var topLk=top.likes||0;
+      html+='<div class="c-replies">';
+      html+='<div class="c-reply-preview"><span class="c-rp-name">'+esc(top.user_name)+':</span>'+esc(top.content)+(topLk?'<span class="c-rp-like">\uD83D\uDC4D '+topLk+'</span>':'')+'</div>';
+      if(replies.length>1){
+        html+='<button class="c-reply-expand" onclick="toggleReplies(\''+c.id+'\')">\u5171'+replies.length+'\u6761\u56de\u590d ></button>';
+      }
+      html+='<div class="c-reply-all" id="replies-'+c.id+'">';
+      replies.forEach(function(r){html+=renderReply(r);});
+      html+='</div>';
+      html+='</div>';
+    }
     html+='</div></div>';
     return html;
   }
+
+  function renderReply(c){
+    var ts=fmtTime(c.created_at);
+    var ini=(c.user_name||'?')[0].toUpperCase(), col=hc(c.user_name||'?');
+    var lk=c.likes||0, lb=[];try{lb=JSON.parse(c.liked_by||'[]');}catch(e){}
+    var liked=curUser&&lb.indexOf(curUser.email)!==-1;
+    var replyH=curUser?'<button class="c-btn" onclick="replyTo(\''+c.id+'\',\''+esc(c.user_name)+'\')">\u56de\u590d</button>':'';
+    var delH=isAdmin?'<button class="c-btn del" onclick="delCmt(\''+c.id+'\')">\u5220\u9664</button>':'';
+    var likeH='<button class="c-btn'+(liked?' liked':'')+'" onclick="likeCmt(\''+c.id+'\')">'+(liked?'\u2764\uFE0F':'\uD83D\uDC4D')+(lk?' '+lk:'')+'</button>';
+    return '<div class="c-item"><span class="c-avatar" style="background:'+col+'">'+esc(ini)+'</span><div class="c-body"><div class="c-meta"><span class="c-name">'+esc(c.user_name)+'</span></div><div class="c-text">'+esc(c.content)+'</div><div class="c-actions"><span class="c-time">'+ts+'</span>'+replyH+'<div class="c-actions-right">'+likeH+delH+'</div></div></div></div>';
+  }
+
+  window.toggleReplies=function(id){
+    var el=document.getElementById('replies-'+id);
+    if(el) el.classList.toggle('show');
+  };
 
   function pad(n){return n<10?'0'+n:''+n;}
   function esc(s){return s?String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'):'';}
