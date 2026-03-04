@@ -1,6 +1,6 @@
 ---
 title: "你好，世界！"
-date: 2025-02-27
+date: 2026-02-27
 description: "LiliWiki 的第一篇文章"
 categories:
   - 日常

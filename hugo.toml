@@ -2,6 +2,7 @@ baseURL = 'https://liliwiki.com/'
 languageCode = 'zh-cn'
 title = 'LiliWiki - 立里的博客'
 theme = 'hugo-theme-stack'
+defaultContentLanguage = 'zh'
 
 paginate = 10
 hasCJKLanguage = true
