@@ -129,11 +129,11 @@
     } else if (edge==='top') {
       peekEl.style.width=PS+'px'; peekEl.style.height=headH+'px';
       peekEl.style.top=-hideAmt+'px'; peekEl.style.left=peekPos+'px';
-      inner.style.transform=''; inner.style.left='0px'; inner.style.top='0px';
+      inner.style.transform='rotate(180deg)'; inner.style.left=PS+'px'; inner.style.top=headH+'px';
     } else {
       peekEl.style.width=PS+'px'; peekEl.style.height=headH+'px';
       peekEl.style.bottom=-hideAmt+'px'; peekEl.style.left=peekPos+'px';
-      inner.style.transform='rotate(180deg)'; inner.style.left=PS+'px'; inner.style.top=headH+'px';
+      inner.style.transform=''; inner.style.left='0px'; inner.style.top='0px';
     }
   }
 
