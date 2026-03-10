@@ -1,0 +1,47 @@
+{{ define "body-class" }}template-home{{ end }}
+
+{{ define "main" }}
+    {{- $paginator := partial "helper/paginator.html" . -}}
+    {{- $postCount := len (where .Site.RegularPages "Section" "post") -}}
+    {{- $categoryCount := len .Site.Taxonomies.categories -}}
+
+    <section class="home-hero">
+        <div class="home-hero__content">
+            <div class="home-hero__eyebrow">LiliWiki</div>
+            <h1 class="home-hero__title">技术笔记、资源整理和折腾记录</h1>
+            <p class="home-hero__desc">把文章、下载和账号体系拆清以后，主站就更适合专注做“读”和“找”。这一页优先展示值得先看的内容。</p>
+            <div class="home-hero__actions">
+                <a href="/archives/" class="home-hero__btn home-hero__btn--primary">开始阅读</a>
+                <a href="/search/" class="home-hero__btn">搜索内容</a>
+                <a href="https://download.liliwiki.com/" class="home-hero__btn">打开下载站</a>
+            </div>
+        </div>
+        <div class="home-hero__stats">
+            <div class="home-hero__stat">
+                <span class="home-hero__stat-value">{{ $postCount }}</span>
+                <span class="home-hero__stat-label">文章</span>
+            </div>
+            <div class="home-hero__stat">
+                <span class="home-hero__stat-value">{{ $categoryCount }}</span>
+                <span class="home-hero__stat-label">分类</span>
+            </div>
+            <div class="home-hero__stat">
+                <span class="home-hero__stat-value">{{ .Site.Params.footer.since }}</span>
+                <span class="home-hero__stat-label">起始年份</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="article-list">
+        {{ range $index, $element := $paginator.Pages }}
+            {{ partial "article-list/default" . }}
+        {{ end }}
+    </section>
+
+    {{- partial "pagination.html" . -}}
+    {{- partial "footer/footer" . -}}
+{{ end }}
+
+{{ define "right-sidebar" }}
+    {{ partial "sidebar/right.html" (dict "Context" . "Scope" "homepage") }}
+{{ end }}

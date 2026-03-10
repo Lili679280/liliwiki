@@ -44,12 +44,6 @@ hasCJKLanguage = true
 [[params.widgets.homepage]]
     type = 'archives'
 
-[[params.widgets.homepage]]
-    type = 'tag-cloud'
-
-[[params.widgets.homepage]]
-    type = 'categories'
-
 [[params.widgets.page]]
     type = 'toc'
 
@@ -98,14 +92,6 @@ hasCJKLanguage = true
     weight = 5
     [menu.main.params]
         icon = 'user'
-
-[[menu.main]]
-    identifier = 'admin'
-    name = '管理'
-    url = 'https://auth.liliwiki.com/admin'
-    weight = 6
-    [menu.main.params]
-        icon = 'settings'
 
 [outputs]
   page = ["HTML"]

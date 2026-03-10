@@ -203,20 +203,36 @@
   var cb=document.getElementById('sCopy');
   if(cb) cb.onclick=function(e){e.stopPropagation();var b=this;navigator.clipboard.writeText(window.location.href).then(function(){b.textContent='\u2713 \u5df2\u590d\u5236';setTimeout(function(){b.textContent='\uD83D\uDD17 \u590d\u5236\u94fe\u63a5';},2000);});};
 
-  // === Auth ===
-  fetch(API+'/api/me',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
-    var u=d.user||d;
-    if(u&&u.email){
-      curUser=u; isAdmin=u.role==='admin'||u.role==='sub_admin';
-      document.getElementById('cmtWriteBtn').style.display='';
-      document.getElementById('cmtLoginLink').style.display='none';
-    } else { doLogin(); }
-  }).catch(function(){ doLogin(); });
-
   function doLogin(){
     document.getElementById('cmtWriteBtn').style.display='none';
     document.getElementById('cmtLoginLink').style.display='';
     document.getElementById('cmtLoginLink').href=API+'/login?redirect='+encodeURIComponent(window.location.href);
+  }
+
+  function initComments(){
+    if(initComments.done) return;
+    initComments.done=true;
+    fetch(API+'/api/me',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+      var u=d.user||d;
+      if(u&&u.email){
+        curUser=u; isAdmin=u.role==='admin'||u.role==='sub_admin';
+        document.getElementById('cmtWriteBtn').style.display='';
+        document.getElementById('cmtLoginLink').style.display='none';
+      } else { doLogin(); }
+    }).catch(function(){ doLogin(); });
+    loadCmts();
+  }
+
+  function scheduleCommentInit(){
+    var root=document.getElementById('comments');
+    if(!root||typeof IntersectionObserver==='undefined'){initComments();return;}
+    var observer=new IntersectionObserver(function(entries){
+      if(entries[0]&&entries[0].isIntersecting){
+        observer.disconnect();
+        initComments();
+      }
+    },{rootMargin:'260px 0px'});
+    observer.observe(root);
   }
 
   // === Toggle form ===
@@ -227,7 +243,7 @@
   };
 
   // === Load & render comments ===
-  loadCmts();
+  scheduleCommentInit();
   var cmtInput=document.getElementById('cmtInput'),cmtCharEl=document.getElementById('cmtChar'),cmtCharWrap=cmtCharEl.parentElement;
   function autoResize(){cmtInput.style.height='auto';cmtInput.style.height=Math.min(cmtInput.scrollHeight,200)+'px';}
   function updateFloatLabel(){if(cmtInput.value.length>0){cmtInput.classList.add('has-content');}else{cmtInput.classList.remove('has-content');}}
