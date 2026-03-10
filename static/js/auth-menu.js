@@ -1,6 +1,15 @@
 (function () {
   var match = document.cookie.match(/(?:^|;\s*)lili_user=([^;]*)/);
   var adminLink = document.querySelector('#main-menu a[href*="auth.liliwiki.com/admin"]');
+  var darkModeToggle = document.getElementById('dark-mode-toggle');
+
+  function updateThemeLabel() {
+    if (!darkModeToggle) return;
+    var label = darkModeToggle.querySelector('span');
+    if (!label) return;
+    var scheme = document.documentElement.dataset.scheme === 'dark' ? 'dark' : 'light';
+    label.textContent = scheme === 'dark' ? '🌙 暗色模式' : '☀️ 浅色模式';
+  }
 
   if (adminLink) {
     adminLink.closest('li').style.display = 'none';
@@ -28,4 +37,7 @@
       link.href = 'https://auth.liliwiki.com/login?redirect=' + encodeURIComponent(window.location.href);
     });
   }
+
+  updateThemeLabel();
+  window.addEventListener('onColorSchemeChange', updateThemeLabel);
 })();
