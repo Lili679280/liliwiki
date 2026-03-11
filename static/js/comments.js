@@ -141,7 +141,16 @@
       allComments=d.comments||[];
       var badge=document.getElementById('cmtCount');
       badge.textContent=allComments.length>0?allComments.length+' \u6761':'';
-      renderList();
+      if(currentDetailId){
+        var detail=document.getElementById('cmtDetail');
+        detail.style.display='';
+        document.getElementById('cmtList').style.display='none';
+        document.getElementById('cmtActions').style.display='none';
+        document.querySelector('.cmt-sort-bar').style.display='none';
+        renderDetail();
+      } else {
+        renderList();
+      }
     }).catch(function(){document.getElementById('cmtList').innerHTML='<div class="cmt-empty"><p>\u8bc4\u8bba\u52a0\u8f7d\u5931\u8d25</p></div>';});
   }
 
