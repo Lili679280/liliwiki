@@ -1,7 +1,10 @@
 {{ define "body-class" }}template-home{{ end }}
 
 {{ define "main" }}
-    {{- $paginator := partial "helper/paginator.html" . -}}
+    {{- $pages := where .Site.RegularPages "Type" "in" .Site.Params.mainSections -}}
+    {{- $pages = where $pages ".Params.archived" "ne" true -}}
+    {{- $pages = partial "helper/pages-sort.html" (dict "Pages" $pages "Context" .) -}}
+    {{- $paginator := .Paginate $pages -}}
     {{- $postCount := len (where .Site.RegularPages "Section" "post") -}}
     {{- $categoryCount := len .Site.Taxonomies.categories -}}
 
