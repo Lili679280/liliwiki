@@ -1,6 +1,7 @@
 (function () {
   var match = document.cookie.match(/(?:^|;\s*)lili_user=([^;]*)/);
   var adminLink = document.querySelector('#main-menu a[href*="auth.liliwiki.com/admin"]');
+  var writerLink = document.querySelector('#main-menu a[href*="auth.liliwiki.com/write"]');
   var darkModeToggle = document.getElementById('dark-mode-toggle');
 
   function updateThemeLabel() {
@@ -13,6 +14,9 @@
 
   if (adminLink) {
     adminLink.closest('li').style.display = 'none';
+  }
+  if (writerLink) {
+    writerLink.closest('li').style.display = 'none';
   }
 
   if (match) {
@@ -30,6 +34,9 @@
 
     if ((role === 'admin' || role === 'sub_admin') && adminLink) {
       adminLink.closest('li').style.display = '';
+    }
+    if ((role === 'admin' || role === 'sub_admin') && writerLink) {
+      writerLink.closest('li').style.display = '';
     }
   } else {
     var guestLinks = document.querySelectorAll('#main-menu a[href*="auth.liliwiki.com/login"]');

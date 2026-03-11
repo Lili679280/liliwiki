@@ -93,6 +93,14 @@ hasCJKLanguage = true
     [menu.main.params]
         icon = 'user'
 
+[[menu.main]]
+    identifier = 'writer'
+    name = '写作'
+    url = 'https://auth.liliwiki.com/write'
+    weight = 6
+    [menu.main.params]
+        icon = 'messages'
+
 [outputs]
   page = ["HTML"]
   home = ["HTML", "RSS"]
