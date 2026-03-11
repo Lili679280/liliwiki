@@ -8,7 +8,9 @@
     var label = darkModeToggle.querySelector('span');
     if (!label) return;
     var scheme = document.documentElement.dataset.scheme === 'dark' ? 'dark' : 'light';
-    label.textContent = scheme === 'dark' ? '☾ 暗色模式' : '☀ 浅色模式';
+    darkModeToggle.classList.remove('scheme-light', 'scheme-dark');
+    darkModeToggle.classList.add(scheme === 'dark' ? 'scheme-dark' : 'scheme-light');
+    label.textContent = scheme === 'dark' ? '暗色模式' : '浅色模式';
   }
 
   if (adminLink) {

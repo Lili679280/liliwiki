@@ -467,6 +467,12 @@ html[data-scheme="dark"] {
 
 #dark-mode-toggle {
     gap: 0.5rem !important;
+    width: fit-content;
+    padding: 0.55rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid var(--card-separator-color, #d9deea);
+    background: rgba(255, 255, 255, 0.72);
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
 }
 
 #dark-mode-toggle .icon-tabler-toggle-left,
@@ -474,9 +480,35 @@ html[data-scheme="dark"] {
     display: none !important;
 }
 
+#dark-mode-toggle::before {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.4rem;
+    flex: 0 0 1.4rem;
+    font-size: 1.25rem;
+    line-height: 1;
+}
+
+#dark-mode-toggle.scheme-light::before {
+    content: "☼";
+    color: #f2b307;
+}
+
+#dark-mode-toggle.scheme-dark::before {
+    content: "☾";
+    color: #96a6ff;
+}
+
 #dark-mode-toggle span {
     min-width: auto;
     display: inline-flex;
     align-items: center;
-    gap: 0.35rem;
+    gap: 0;
+}
+
+html[data-scheme="dark"] #dark-mode-toggle {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(166, 177, 255, 0.16);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
 }
