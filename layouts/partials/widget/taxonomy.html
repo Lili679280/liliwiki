@@ -1,0 +1,49 @@
+{{ $context := .Context }}
+
+{{ if not .Params.taxonomy }}
+    {{ warnf "Taxonomy field is required" }}
+{{ end }}
+
+{{ $taxonomy := index $context.Site.Taxonomies .Params.taxonomy }}
+{{ if not $taxonomy }}
+    {{ warnf "Taxonomy %s not found" .Params.taxonomy }}
+{{ end }}
+
+{{ $taxonomyPage := $taxonomy.Page }}
+{{ $widgetTitle := .Params.title }}
+{{ $limit := default 10 .Params.limit }}
+{{ $icon := default .Params.taxonomy .Params.icon }}
+{{ $showLink := default false .Params.showLink }}
+{{ $items := slice }}
+
+{{ range $taxonomy.ByCount }}
+    {{ $visiblePages := where .Pages ".Params.archived" "ne" true }}
+    {{ $visiblePages = where $visiblePages ".Params.deleted" "ne" true }}
+    {{ if gt (len $visiblePages) 0 }}
+        {{ $items = $items | append (dict "Page" .Page "Count" (len $visiblePages)) }}
+    {{ end }}
+{{ end }}
+{{ $items = sort $items "Count" "desc" }}
+
+<section class="widget tagCloud">
+    <div class="widget-icon">
+        {{ partial "helper/icon" $icon }}
+    </div>
+    <h2 class="widget-title section-title">
+        {{ if $showLink }}
+            <a href="{{ $taxonomyPage.RelPermalink }}">
+                {{ $widgetTitle }}
+            </a>
+        {{ else }}
+            {{ $widgetTitle }}
+        {{ end }}
+    </h2>
+
+    <div class="tagCloud-tags">
+        {{ range first $limit $items }}
+            <a href="{{ .Page.RelPermalink }}">
+                {{ .Page.Title }}
+            </a>
+        {{ end }}
+    </div>
+</section>
