@@ -8,7 +8,7 @@
     var label = darkModeToggle.querySelector('span');
     if (!label) return;
     var scheme = document.documentElement.dataset.scheme === 'dark' ? 'dark' : 'light';
-    label.textContent = scheme === 'dark' ? '☾ 暗色模式' : '☼ 浅色模式';
+    label.textContent = scheme === 'dark' ? '☾ 暗色模式' : '☀ 浅色模式';
   }
 
   if (adminLink) {

@@ -465,6 +465,18 @@ html[data-scheme="dark"] {
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
 }
 
+#dark-mode-toggle {
+    gap: 0.5rem !important;
+}
+
+#dark-mode-toggle .icon-tabler-toggle-left,
+#dark-mode-toggle .icon-tabler-toggle-right {
+    display: none !important;
+}
+
 #dark-mode-toggle span {
-    min-width: 8.6rem;
+    min-width: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
 }
