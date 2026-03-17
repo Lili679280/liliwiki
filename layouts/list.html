@@ -11,7 +11,7 @@
         <div class="section-card">
             <div class="section-details">
                 {{- $rawPages := partial "helper/pages.html" . -}}
-                {{- $visiblePages := where $rawPages ".Params.archived" "ne" true -}}
+                {{- $visiblePages := $rawPages -}}
                 <h3 class="section-count">{{ T "list.page" (len $visiblePages) }}</h3>
                 <h1 class="section-term">{{ .Title }}</h1>
                 {{ with .Params.description }}
@@ -51,7 +51,6 @@
         </aside>
     {{- end -}}
 
-    {{ $pages = where $pages ".Params.archived" "ne" true }}
     {{ $paginator := .Paginate $pages }}
     {{ with $paginator }}
         <section class="article-list--compact">

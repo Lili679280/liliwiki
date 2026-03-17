@@ -1,5 +1,4 @@
-{{ $related := where ((.Site.RegularPages.Related .) | first 12) ".Params.archived" "ne" true }}
-{{ $related = where $related ".Params.deleted" "ne" true }}
+{{ $related := partial "helper/filter-visible-pages.html" (dict "Pages" ((.Site.RegularPages.Related .) | first 12)) }}
 {{ $related = first 5 $related }}
 {{ with $related }}
 <aside class="related-content--wrapper">

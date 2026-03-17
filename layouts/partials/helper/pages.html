@@ -11,8 +11,7 @@
     {{- end -}}
 {{- end -}}
 
-{{- $pages = where $pages ".Params.archived" "ne" true -}}
-{{- $pages = where $pages ".Params.deleted" "ne" true -}}
+{{- $pages = partial "helper/filter-visible-pages.html" (dict "Pages" $pages) -}}
 {{- $pages := partial "helper/pages-sort.html" (dict "Pages" $pages "Context" .) -}}
 
 {{- return $pages -}}

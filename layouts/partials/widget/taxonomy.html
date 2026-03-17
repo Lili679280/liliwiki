@@ -17,8 +17,7 @@
 {{ $items := slice }}
 
 {{ range $taxonomy.ByCount }}
-    {{ $visiblePages := where .Pages ".Params.archived" "ne" true }}
-    {{ $visiblePages = where $visiblePages ".Params.deleted" "ne" true }}
+    {{ $visiblePages := partial "helper/filter-visible-pages.html" (dict "Pages" .Pages) }}
     {{ if gt (len $visiblePages) 0 }}
         {{ $items = $items | append (dict "Page" .Page "Count" (len $visiblePages)) }}
     {{ end }}

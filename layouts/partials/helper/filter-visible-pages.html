@@ -1,0 +1,4 @@
+{{- $pages := .Pages -}}
+{{- $pages = where $pages ".Params.archived" "ne" true -}}
+{{- $pages = where $pages ".Params.deleted" "ne" true -}}
+{{- return $pages -}}
