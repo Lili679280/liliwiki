@@ -91,7 +91,7 @@ hasCJKLanguage = true
     url = '/privacy/'
     weight = 5
     [menu.main.params]
-        icon = 'lock'
+        icon = 'settings'
 
 [[menu.main]]
     identifier = 'terms'
@@ -99,7 +99,7 @@ hasCJKLanguage = true
     url = '/terms/'
     weight = 6
     [menu.main.params]
-        icon = 'scale'
+        icon = 'copyright'
 
 [[menu.main]]
     identifier = 'login'
