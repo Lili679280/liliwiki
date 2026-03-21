@@ -86,10 +86,26 @@ hasCJKLanguage = true
         icon = 'link'
 
 [[menu.main]]
+    identifier = 'privacy'
+    name = '隐私政策'
+    url = '/privacy/'
+    weight = 5
+    [menu.main.params]
+        icon = 'lock'
+
+[[menu.main]]
+    identifier = 'terms'
+    name = '服务条款'
+    url = '/terms/'
+    weight = 6
+    [menu.main.params]
+        icon = 'scale'
+
+[[menu.main]]
     identifier = 'login'
     name = '账号'
     url = 'https://auth.liliwiki.com/login'
-    weight = 5
+    weight = 7
     [menu.main.params]
         icon = 'user'
 
@@ -97,7 +113,7 @@ hasCJKLanguage = true
     identifier = 'writer'
     name = '写作'
     url = 'https://auth.liliwiki.com/write'
-    weight = 6
+    weight = 8
     [menu.main.params]
         icon = 'messages'
 
