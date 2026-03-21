@@ -16,7 +16,7 @@ hasCJKLanguage = true
 
 [params.footer]
     since = 2025
-    customText = '<a href="https://download.liliwiki.com/">下载站</a> &middot; <a href="/privacy/">隐私政策</a> &middot; <a href="/terms/">服务条款</a>'
+    customText = '<a href="/privacy/">隐私政策</a> &middot; <a href="/terms/">服务条款</a>'
 
 [params.dateFormat]
     published = '2006-01-02'
