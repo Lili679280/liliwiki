@@ -16,6 +16,7 @@ hasCJKLanguage = true
 
 [params.footer]
     since = 2025
+    customText = '<a href="https://download.liliwiki.com/">下载站</a> &middot; <a href="/privacy/">隐私政策</a> &middot; <a href="/terms/">服务条款</a>'
 
 [params.dateFormat]
     published = '2006-01-02'
@@ -86,26 +87,10 @@ hasCJKLanguage = true
         icon = 'link'
 
 [[menu.main]]
-    identifier = 'privacy'
-    name = '隐私政策'
-    url = '/privacy/'
-    weight = 5
-    [menu.main.params]
-        icon = 'settings'
-
-[[menu.main]]
-    identifier = 'terms'
-    name = '服务条款'
-    url = '/terms/'
-    weight = 6
-    [menu.main.params]
-        icon = 'copyright'
-
-[[menu.main]]
     identifier = 'login'
     name = '账号'
     url = 'https://auth.liliwiki.com/login'
-    weight = 7
+    weight = 5
     [menu.main.params]
         icon = 'user'
 
@@ -113,7 +98,7 @@ hasCJKLanguage = true
     identifier = 'writer'
     name = '写作'
     url = 'https://auth.liliwiki.com/write'
-    weight = 8
+    weight = 6
     [menu.main.params]
         icon = 'messages'
 
