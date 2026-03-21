@@ -2,6 +2,7 @@
 title = "隐私政策"
 description = "LiliWiki 隐私政策"
 slug = "privacy"
+url = "/privacy/"
 +++
 
 # 隐私政策

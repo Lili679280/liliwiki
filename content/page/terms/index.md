@@ -2,6 +2,7 @@
 title = "服务条款"
 description = "LiliWiki 服务条款"
 slug = "terms"
+url = "/terms/"
 +++
 
 # 服务条款
