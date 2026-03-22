@@ -237,6 +237,32 @@ samp {
     gap: 0.8rem;
 }
 
+.home-hero__legal {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.2rem;
+    color: var(--card-text-color-secondary);
+}
+
+.home-hero__legal-link {
+    color: var(--accent-color);
+    font-weight: 700;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.18s ease, color 0.18s ease;
+}
+
+.home-hero__legal-link:hover {
+    color: var(--accent-color-darker);
+    border-color: currentColor;
+}
+
+.home-hero__legal-sep {
+    color: var(--card-text-color-tertiary);
+}
+
 .home-hero__btn {
     display: inline-flex;
     align-items: center;
@@ -311,8 +337,18 @@ html[data-scheme="dark"] {
     }
 
     .home-hero__desc,
-    .home-hero__stat-label {
+    .home-hero__stat-label,
+    .home-hero__legal,
+    .home-hero__legal-sep {
         color: rgba(225, 229, 245, 0.78);
+    }
+
+    .home-hero__legal-link {
+        color: #d7ddff;
+    }
+
+    .home-hero__legal-link:hover {
+        color: #fff;
     }
 
     .home-hero__stat {
